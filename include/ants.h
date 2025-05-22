@@ -11,7 +11,9 @@
 #include <memory>
 #include <list>
 
+//Class Room
 class Room {
+
 private:
 std::string name;
 int capacity;
@@ -27,6 +29,21 @@ int getCurrentOccupants() const;
 void setCurrentOccupants(int value);
 
 bool canAcceptAnt() const;
+};
+
+// Class Tunnel
+class Tunnel {
+
+private:
+std::shared_ptr<Room> from_room;
+std::shared_ptr<Room> to_room;
+
+public:
+Tunnel(std::shared_ptr<Room> from_room, std::shared_ptr<Room> to_room);
+~Tunnel() = default;
+
+std::shared_ptr<Room> getFromRoom() const;
+std::shared_ptr<Room> getToRoom() const;
 };
 
 #endif //ANTS_H
