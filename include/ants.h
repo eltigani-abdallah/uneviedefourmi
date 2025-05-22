@@ -62,4 +62,20 @@ std::shared_ptr<PathNode> getNext() const;
 void setNext(std::shared_ptr<PathNode> next);
 };
 
+//Class ant
+class Ant {
+
+private:
+int id;
+std::shared_ptr<PathNode> current_path_node;
+
+public:
+Ant(int id, std::shared_ptr<PathNode> starting_node);
+~Ant() = default;
+
+int getId() const;
+std::shared_ptr<PathNode> getCurrentPathNode() const;
+void setCurrentPathNode(std::shared_ptr<PathNode> node);
+};
+
 #endif //ANTS_H
