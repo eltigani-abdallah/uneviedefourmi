@@ -276,10 +276,90 @@ The provided code, diagrams, and stepwise movements offer a comprehensive unders
 ## Repository Structure
 
 ```
-uneviedefourmi/
+antsfamilylife/
+├── include/
+│   ├── AntHillConfig.h
+│   ├── ants.h
+│   └── menu.h
 │
-├── ants.cpp
-├── ants.hpp
-├── main.cpp
+├── source/
+│   ├── AntHillConfig.cpp
+│   ├── ants.cpp
+│   ├── main.cpp
+│   └── menu.cpp
+│
+├── .gitignore
 └── README.md
+```
+ 
+## Class Diagram
+
+```
++------------------------+
+|       Room             |
++------------------------+
+| - name                 |
+| - capacity             |
+| - current_occupants    | 
++------------------------+
+| + Room                 |
+| + getName()            |
+| + getCapacity()        |
+| + getCurrentOccupants()|
+| + setCurrentOccupants()|
+| + canAcceptAnt()       |
++------------------------+
+
++------------------------+
+|       Tunnel           |
++------------------------+
+| - from_room            |
+| - to_room              |
++------------------------+
+| + Tunnel               |
+| + getFromRoom()        |
+| + getToRoom()          |
++------------------------+
+
++------------------------+
+|      PathNode          |
++------------------------+
+| - room                 |
+| - next                 |
++------------------------+
+| + PathNode             |
+| + getRoom()            |
+| + getNext()            |
+| + setNext()            |
++------------------------+
+
++------------------------+
+|        Ant             |
++------------------------+
+| - id                   |
+| - current_path_node    |
++------------------------+
+| + Ant                  |
+| + getId()              |
+| + getCurrentPathNode() |
+| + setCurrentPathNode() |
++------------------------+
+
++------------------------+
+|      AntHill           |
++------------------------+
+| - rooms                |
+| - tunnels              |
+| - ants                 |
++------------------------+
+| + AntHill              |
+| + addRoom()            |
+| + addTunnel()          |
+| + addAnt()             |
+| + getRoom()            |
+| + getAdjacentRooms()   |
+| + simulateMovement()   |
+| + printState()         |
+| + computeOptimalPath() |
++------------------------+
 ```
