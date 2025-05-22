@@ -46,4 +46,20 @@ std::shared_ptr<Room> getFromRoom() const;
 std::shared_ptr<Room> getToRoom() const;
 };
 
+//Class Pathnode
+class PathNode {
+
+private:
+std::shared_ptr<Room> room;
+std::shared_ptr<PathNode> next;
+
+public:
+PathNode(std::shared_ptr<Room> room);
+~PathNode() = default;
+
+std::shared_ptr<Room> getRoom() const;
+std::shared_ptr<PathNode> getNext() const;
+void setNext(std::shared_ptr<PathNode> next);
+};
+
 #endif //ANTS_H
