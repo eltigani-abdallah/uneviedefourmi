@@ -28,6 +28,22 @@ std::shared_ptr<PathNode> PathNode::getNext() const { return next; }
 void PathNode::setNext(std::shared_ptr<PathNode> next) { this->next = next; }
 
 //Ant
+Ant::Ant(int id, std::shared_ptr<PathNode> starting_node) : id(id), current_path_node(starting_node) {}
+int Ant::getId() const { return id; }
+std::shared_ptr<PathNode> Ant::getCurrentPathNode() const { return current_path_node = node; }
+void Ant::setCurrentPathNode(std::shared_ptr<PathNode> node) { current_path_node = node; }
 
 //AntHill
+
+
+//Get adjacent room
+
+
+//Compute optimal path
+
+
+//Simulate movement
+
+
+//Print state
 
