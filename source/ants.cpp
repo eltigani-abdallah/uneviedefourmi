@@ -51,14 +51,14 @@ std::vector<std::shared_ptr<Room>>
 AntHill::getAdjacentRooms(const std::string& name) {
 std::vector<std::shared_ptr<Room>> adjacent_rooms;
 for (const auto& tunnel : tunnels) {
-if (tunnel->getFromRoom()->getName() == room_name) {
+    if (tunnel->getFromRoom()->getName() == name) {
 adjacent_rooms.push_back(tunnel->getToRoom()); }
 }
 return adjacent_rooms;
 }
 
 //Compute optimal path
-std::shared_ptr<PathNode> AntHill::computerOptimalPath(const std::string& start, const std::string& end) {
+std::shared_ptr<PathNode> AntHill::computeOptimalPath(const std::string& start, const std::string& end) {
 std::unordered_map<std::string, std::shared_ptr<PathNode>> visited;
 std::queue<std::shared_ptr<PathNode>> queue;
 

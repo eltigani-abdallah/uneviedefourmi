@@ -2,6 +2,6 @@
 #define MENU_H
 
 void displayAntHillMenu();
-int anthillChoice();
+int getAntHillChoice();
 
 #endif

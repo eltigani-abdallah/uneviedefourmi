@@ -9,7 +9,6 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
-//#include <list>
 
 //Class Room
 class Room {
@@ -28,7 +27,7 @@ int getCapacity() const;
 int getCurrentOccupants() const;
 void setCurrentOccupants(int value);
 
-bool canAcceptAnt() const;
+bool canAcceptAnt(int value) const;
 };
 
 // Class Tunnel
@@ -92,7 +91,7 @@ AntHill();
 
 void addRoom(const std::string& name, int capacity);
 void addTunnel(const std::string& from, const std::string& to);
-void addAnt(const std::pointed_ptr<Ant>& ant);
+void addAnt(const std::shared_ptr<Ant>& ant);
 
 std::shared_ptr<Room> getRoom(const std::string& name);
 std::vector<std::shared_ptr<Room>> getAdjacentRooms(const std::string& room_name);

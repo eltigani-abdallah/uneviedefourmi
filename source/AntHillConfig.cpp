@@ -70,9 +70,9 @@ void configureAntHillHouse2 (AntHill& anthill) {
     anthill.addRoom("Sd", 100);
 
     //Add Tunnels
-    anthill.addTunnels("Sv", "S1");
-    anthill.addTunnels("Sv", "S2");
-    anthill.addTunnels("Sv", "Sd");
+    anthill.addTunnel("Sv", "S1");
+    anthill.addTunnel("Sv", "S2");
+    anthill.addTunnel("Sv", "Sd");
 
     //Calculate optimal path for each ant
     auto path = anthill.computeOptimalPath("Sv", "Sd");

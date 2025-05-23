@@ -20,7 +20,7 @@ void displayAntHillMenu() {
     while (true) {
     displayAntHillMenu();
     std::cout << "Enter your AntHill Choice (0-5): " << std::endl;
-    std::cin >> anthillChoice;
+    std::cin >> choice;
     if (std::cin.fail() || anthillChoice < 0 || anthillChoice > 5) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -29,7 +29,7 @@ void displayAntHillMenu() {
             break;
         }
     }
-    return anthillChoice;
+    return choice;
    }
 
 
