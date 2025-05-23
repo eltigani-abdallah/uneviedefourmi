@@ -14,7 +14,7 @@ int Room::getCapacity() const { return capacity; }
 int Room::getCurrentOccupants() const { return current_occupants; }
 void Room::setCurrentOccupants(int value) {current_occupants = value;}
 
-bool Room::canAcceptAnt(int value) {return current_occupants < capacity;}
+bool Room::canAcceptAnt(int value) { return current_occupants + value <= capacity; }
 
 //Tunnel
 Tunnel::Tunnel(const std::shared_ptr<Room> from, std::shared_ptr<Room> to) : from_room(from), to_room(to) {}
@@ -30,7 +30,7 @@ void PathNode::setNext(std::shared_ptr<PathNode> next) { this->next = next; }
 //Ant
 Ant::Ant(int id, std::shared_ptr<PathNode> starting_node) : id(id), current_path_node(starting_node) {}
 int Ant::getId() const { return id; }
-std::shared_ptr<PathNode> Ant::getCurrentPathNode() const { return current_path_node = node; }
+std::shared_ptr<PathNode> Ant::getCurrentPathNode() const { return current_path_node; }
 void Ant::setCurrentPathNode(std::shared_ptr<PathNode> node) { current_path_node = node; }
 
 //AntHill
@@ -39,7 +39,7 @@ AntHill::AntHill() {}
 void AntHill::addRoom(const std::string& name, int capacity) {
 rooms[name] = std::make_shared<Room>(name, capacity);}
 
-void AntHill::addTunnel(const std::string& from, cosnst std::string& to) {
+void AntHill::addTunnel(const std::string& from, const std::string& to) {
 tunnels.push_back(std::make_shared<Tunnel>(rooms[from], rooms[to]));}
 
 void AntHill::addAnt(std::shared_ptr<Ant> ant) { ants.push_back(ant); }
@@ -93,58 +93,96 @@ int steps = 0;
 while (!ants.empty()) {
 std::vector<std::shared_ptr<PathNode>> next_nodes;
 std::vector<std::string> movements;
+bool anyMovement = false;
 
-//Calculate next node for each ant
+// Calculate the next node for each ant
 for (const auto& ant : ants) {
 auto current_node = ant->getCurrentPathNode();
 auto current_room = current_node->getRoom();
-std::string movement;
+
+// If the ant is already in the dormitory, skip
 if (current_room->getName() == "Sd") {
 next_nodes.push_back(current_node);
 continue;
 }
+
+// Get adjacent rooms
 auto adjacent_rooms = getAdjacentRooms(current_room->getName());
 for (const auto& room : adjacent_rooms) {
+if (room->canAcceptAnt(1)) {
 auto new_node = std::make_shared<PathNode>(room);
 new_node->setNext(current_node);
 next_nodes.push_back(new_node);
-movement = "f" + std::to_string(ant->getId()) + "-" + current_room->getName() +"->" + room->getName();
-movements.push_back(movement);
+movements.push_back("f" + std::to_string(ant->getId()) + " -- " + current_room->getName() + " -- " + room->getName());
+anyMovement = true;
 break;
 }
 }
-if (next-nodes.sizes() != ants.size()) {
-next_nodes.push_back(current_node);
+// If no movement was possible, keep the ant in the current position
+if (next_nodes.size() < ants.size()) {
+    next_nodes.push_back(current_node);
 }
 }
 
-//print step movement
+// Print the movements for this step
+if (anyMovement) {
 std::cout << "==== E" << (steps + 1) << " ====" << std::endl;
 for (const auto& move : movements) {
-std::cout << move << std::endl;
+    std::cout << move << std::endl;
+}
 }
 
-//update ant positions
-for (size_t i = 0; i < ants.size(); i++) {
+// Update the positions of the ants
+for (size_t i = 0; i < ants.size(); ++i) {
 auto& ant = ants[i];
 auto current_node = ant->getCurrentPathNode();
 auto next_node = next_nodes[i];
 auto current_room = current_node->getRoom();
 auto next_room = next_node->getRoom();
-current_room->setCurrentOccupants(current_room->getCurrentOccupants() - 1);
-next_room->setCurrentOccupants(next_room->getCurrentOccupants() + 1);
-ant->setCurrentPathNode(next_node);
+
+// Update the room occupancy
+if (current_room != next_room) {
+    current_room->setCurrentOccupants(current_room->getCurrentOccupants() - 1);
+    next_room->setCurrentOccupants(next_room->getCurrentOccupants() + 1);
+    ant->setCurrentPathNode(next_node);
+}
 }
 
-//Erase ants that are in dormitory room
-ants.erase(std::remove_if(ants.begin(), ants.end(), [](const std::shared_ptr<Ant>& ant) {
-return ant->getCurrentPathNode() -> getRoom()->getName() == "Sd";}), ants.end());
-printState();
+// Remove ants that have reached the dormitory
+ants.erase(std::remove_if(ants.begin(), ants.end(),
+[](const std::shared_ptr<Ant>& ant) {
+    return ant->getCurrentPathNode()->getRoom()->getName() == "Sd";
+}), ants.end());
+
+//step counter
 steps++;
 }
-std::cout << '=== Total number of steps: " << steps << std::endl;
+
+std::cout << "=== Total steps: " << steps << std::endl;
 }
 
-
 //Print state
+void AntHill::printState() const{
+for (const auto& ant : ants) {
+auto room = ant->getCurrentPathNode()->getRoom();
+room_ants[room->getName()].push_back(ant->getId());
+}
+std::cout << " === Actual State ===" << std::endl;
+for (const auto& room : rooms) {
+const auto& room_name = room.first;
+const auto& ants_in_room = room_ants[room_name];
+std::cout << "Room " << room_name << " (" << room.second->getCurrentOccupants() << ") ";
+if (!ants_in_room.empty()) {
+std::cout << "f";
+for (size_t i = 0; i < ants_in_room.size(); ++i) {
+if (i > 0) std::cout << " - ";
+std::cout << ants_in_room[i];
+}
+}
+}
+std::cout << std::endl;
+}
+std::cout << std::endl;
+}
+
 
