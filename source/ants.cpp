@@ -87,6 +87,38 @@ return nullptr;
 }
 
 //Simulate movement
+void AntHill::simulateMovement(){
+int steps = 0;
+
+while (!ants.empty()) {
+std::vector<std::shared_ptr<PathNode>> next_nodes;
+std::vector<std::string> movements;
+
+//Calculate next node for each ant
+for (const auto& ant : ants) {
+auto current_node = ant->getCurrentPathNode();
+auto current_room = current_node->getRoom();
+std::string movement;
+if (current_room->getName() == "Sd") {
+next_nodes.push_back(current_node);
+continue;
+}
+auto adjacent_rooms = getAdjacentRooms(current_room->getName());
+for (const auto& room : adjacent_rooms) {
+auto new_node = std::make_shared<PathNode>(room);
+new_node->setNext(current_node);
+next_nodes.push_back(new_node);
+movement = "f" + std::to_string(ant->getId()) + "-" + current_room->getName() +"->" + room->getName();
+movements.push_back(movement);
+break;
+}
+}
+if (next-nodes.sizes() != ants.size()) {
+next_nodes.push_back(current_node);
+}
+}
+//
+
 
 
 //Print state
