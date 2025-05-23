@@ -34,7 +34,17 @@ std::shared_ptr<PathNode> Ant::getCurrentPathNode() const { return current_path_
 void Ant::setCurrentPathNode(std::shared_ptr<PathNode> node) { current_path_node = node; }
 
 //AntHill
+AntHill::AntHill() {}
 
+void AntHill::addRoom(const std::string& name, int capacity) {
+rooms[name] = std::make_shared<Room>(name, capacity);}
+
+void AntHill::addTunnel(const std::string& from, cosnst std::string& to) {
+tunnels.push_back(std::make_shared<Tunnel>(rooms[from], rooms[to]));}
+
+void AntHill::addAnt(std::shared_ptr<Ant> ant) { ants.push_back(ant); }
+std::shared_ptr<Room> AntHill::getRoom(const std::string& name) {
+return rooms[name];}
 
 //Get adjacent room
 
