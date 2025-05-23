@@ -6,8 +6,9 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(.)
 
 add_executable(uneviedefourmi
-        antColony.cpp
-        antColony.hpp
+        colony.cpp
+        colony.hpp
         room.cpp
         room.hpp
-        testyboi.cpp)
+        testyboi.cpp
+        errcodes.h)

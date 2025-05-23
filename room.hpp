@@ -1,7 +1,7 @@
 
 
-#ifndef SALLE_H
-#define SALLE_H
+#ifndef ROOM_H
+#define ROOM_H
 #include <iostream>
 #include <vector>
 
@@ -13,12 +13,11 @@ class Room {
     int currentAmount;
     std::vector<Room*> nextRoom;
 
-    Room(int num, int capacity, int currentAmount=0);
-    void moveIntoRoom(int amount, Room* prevRoom,Room* nextRoom);
+    Room(int num, int capacity=1, int currentAmount=0);
     void showStats();
-    void addNextRoom(Room* room);
+    void addNextRoom(std::vector<Room*> rooms);
 };
 
 
 
-#endif //SALLE_H
+#endif //ROOM_H
