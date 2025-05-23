@@ -47,7 +47,15 @@ std::shared_ptr<Room> AntHill::getRoom(const std::string& name) {
 return rooms[name];}
 
 //Get adjacent room
-
+std::vector<std::shared_ptr<Room>>
+AntHill::getAdjacentRooms(const std::string& name) {
+std::vector<std::shared_ptr<Room>> adjacent_rooms;
+for (const auto& tunnel : tunnels) {
+if (tunnel->getFromRoom()->getName() == room_name) {
+adjacent_rooms.push_back(tunnel->getToRoom()); }
+}
+return adjacent_rooms;
+}
 
 //Compute optimal path
 
