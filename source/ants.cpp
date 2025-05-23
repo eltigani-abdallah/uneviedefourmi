@@ -17,6 +17,9 @@ void Room::setCurrentOccupants(int value) {current_occupants = value;}
 bool Room::canAcceptAnt(int value) {return current_occupants < capacity;}
 
 //Tunnel
+Tunnel::Tunnel(const std::shared_ptr<Room> from, std::shared_ptr<Room> to) : from_room(from), to_room(to) {}
+std::shared_ptr<Room> Tunnel::getFromRoom() const { return from_room; }
+std::shared_ptr<Room> Tunnel::getToRoom() const { return to_room; }
 
 //PathNode
 
