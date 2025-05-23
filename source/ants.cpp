@@ -58,7 +58,33 @@ return adjacent_rooms;
 }
 
 //Compute optimal path
+std::shared_ptr<PathNode> AntHill::computerOptimalPath(const std::string& start, const std::string& end) {
+std::unordered_map<std::string, std::shared_ptr<PathNode>> visited;
+std::queue<std::shared_ptr<PathNode>> queue;
 
+auto start_room = getRoom(start);
+auto start_node = std::make_shared<PathNode>(start_room);
+visited[start] = start_node;
+queue.push(start_node);
+
+while (!queue.empty()) {
+auto current_node = queue.front();
+queue.pop();
+auto current_room = current_node->getRoom();
+if (current_room->getName() == end) {
+return current_node;
+}
+auto adjacent_rooms = getAdjacentRooms(current_room->getName());
+for (const auto& room : adjacent_rooms) {
+if (visited.find(room->getName()) == visited.end()) {
+auto new_node = std::make_shared<PathNode>(room);
+visited[room->getName()] = new_node;
+queue.push(new_node);
+}
+}
+}
+return nullptr;
+}
 
 //Simulate movement
 
