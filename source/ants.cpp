@@ -136,8 +136,14 @@ next_room->setCurrentOccupants(next_room->getCurrentOccupants() + 1);
 ant->setCurrentPathNode(next_node);
 }
 
-//
-
+//Erase ants that are in dormitory room
+ants.erase(std::remove_if(ants.begin(), ants.end(), [](const std::shared_ptr<Ant>& ant) {
+return ant->getCurrentPathNode() -> getRoom()->getName() == "Sd";}), ants.end());
+printState();
+steps++;
+}
+std::cout << '=== Total number of steps: " << steps << std::endl;
+}
 
 
 //Print state
