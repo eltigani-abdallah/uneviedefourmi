@@ -125,6 +125,18 @@ std::cout << move << std::endl;
 }
 
 //update ant positions
+for (size_t i = 0; i < ants.size(); i++) {
+auto& ant = ants[i];
+auto current_node = ant->getCurrentPathNode();
+auto next_node = next_nodes[i];
+auto current_room = current_node->getRoom();
+auto next_room = next_node->getRoom();
+current_room->setCurrentOccupants(current_room->getCurrentOccupants() - 1);
+next_room->setCurrentOccupants(next_room->getCurrentOccupants() + 1);
+ant->setCurrentPathNode(next_node);
+}
+
+//
 
 
 
