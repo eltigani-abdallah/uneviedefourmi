@@ -117,7 +117,14 @@ if (next-nodes.sizes() != ants.size()) {
 next_nodes.push_back(current_node);
 }
 }
-//
+
+//print step movement
+std::cout << "==== E" << (steps + 1) << " ====" << std::endl;
+for (const auto& move : movements) {
+std::cout << move << std::endl;
+}
+
+//update ant positions
 
 
 
