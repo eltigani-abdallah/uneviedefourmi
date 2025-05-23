@@ -22,6 +22,10 @@ std::shared_ptr<Room> Tunnel::getFromRoom() const { return from_room; }
 std::shared_ptr<Room> Tunnel::getToRoom() const { return to_room; }
 
 //PathNode
+PathNode::PathNode(std::shared_ptr<Room> room) : room(room), next(nullptr) {}
+std::shared_ptr<Room> PathNode::getRoom() const { return room; }
+std::shared_ptr<PathNode> PathNode::getNext() const { return next; }
+void PathNode::setNext(std::shared_ptr<PathNode> next) { this->next = next; }
 
 //Ant
 
