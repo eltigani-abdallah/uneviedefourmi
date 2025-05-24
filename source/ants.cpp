@@ -16,7 +16,7 @@ void AntHill::addAnt(std::shared_ptr<Ant> ant) {
     ants.back()->current_room->arrive();
 }
 
-//To move ants
+// To move ants
 void AntHill::simulateMovement() {
     int steps = 0;
 
@@ -27,16 +27,24 @@ void AntHill::simulateMovement() {
 
             std::shared_ptr<Tunnel> chosenTunnel = nullptr;
 
-            // Find the best tunnel leading to a room that can accept an ant
+            // Evaluate all valid tunnels
             for (const auto& tunnel : tunnels) {
                 if (tunnel->from_room == ant->current_room && tunnel->to_room->canAcceptAnt(1)) {
-                    if (!chosenTunnel || (tunnel->to_room->name == "Sd")) { // Prioritize tunnels leading directly to Sd
+                    // Check if this move leads directly to Sd
+                    if (tunnel->to_room->name == "Sd") {
                         chosenTunnel = tunnel;
+                        break;
+                    }
+
+                    // Check if moving to this room can reach Sd
+                    if (canReachSd(tunnel->to_room)) {
+                        chosenTunnel = tunnel;
+                        break;
                     }
                 }
             }
 
-            // If a tunnel was chosen, move the ant
+            // Move the ant if a tunnel was chosen
             if (chosenTunnel) {
                 movements.push_back("f" + std::to_string(ant->id) + " -- " + ant->current_room->name + " -> " + chosenTunnel->to_room->name);
                 ant->current_room->depart();

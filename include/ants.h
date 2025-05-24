@@ -7,8 +7,10 @@
 #include <memory>
 #include <iostream>
 #include <algorithm>
+#include <queue>
+#include <unordered_set>
 
-// class room
+// class Room
 class Room {
 public:
     std::string name;
@@ -23,7 +25,7 @@ public:
     void depart() { current_occupants--; }
 };
 
-//class tunnel
+// class Tunnel
 class Tunnel {
 public:
     std::shared_ptr<Room> from_room;
@@ -33,7 +35,7 @@ public:
         : from_room(std::move(from)), to_room(std::move(to)) {}
 };
 
-//class ant
+// class Ant
 class Ant {
 public:
     int id;
@@ -43,7 +45,7 @@ public:
         : id(id), current_room(std::move(starting_room)) {}
 };
 
-// class anthill
+// class AntHill
 class AntHill {
 private:
     std::unordered_map<std::string, std::shared_ptr<Room>> rooms;
@@ -55,6 +57,32 @@ public:
     void addTunnel(std::string from, std::string to);
     void addAnt(std::shared_ptr<Ant> ant);
     void simulateMovement();
+
+    // Check if a room can reach Sd
+    bool canReachSd(std::shared_ptr<Room> room) {
+        std::unordered_set<std::shared_ptr<Room>> visited;
+        std::queue<std::shared_ptr<Room>> toVisit;
+        toVisit.push(room);
+
+        while (!toVisit.empty()) {
+            auto currentRoom = toVisit.front();
+            toVisit.pop();
+
+            if (currentRoom->name == "Sd") {
+                return true; // Found a path to Sd
+            }
+
+            visited.insert(currentRoom);
+
+            // Check all connected tunnels
+            for (const auto& tunnel : tunnels) {
+                if (tunnel->from_room == currentRoom && visited.find(tunnel->to_room) == visited.end()) {
+                    toVisit.push(tunnel->to_room);
+                }
+            }
+        }
+        return false;
+    }
 
     std::shared_ptr<Room> getRoom(const std::string& name) {
         auto it = rooms.find(name);
