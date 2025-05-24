@@ -1,7 +1,3 @@
-//
-// Created by chris on 22/05/2025.
-//
-
 #ifndef ANTS_H
 #define ANTS_H
 
@@ -9,96 +5,64 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
+#include <iostream>
+#include <algorithm>
 
-//Class Room
+// class room
 class Room {
-
-private:
-std::string name;
-int capacity;
-int current_occupants;
-
 public:
-Room(std::string name, int capacity);
-~Room() = default;
+    std::string name;
+    int capacity;
+    int current_occupants;
 
-const std::string& getName() const;
-int getCapacity() const;
-int getCurrentOccupants() const;
-void setCurrentOccupants(int value);
+    Room(std::string name, int capacity)
+        : name(std::move(name)), capacity(capacity), current_occupants(0) {}
 
-bool canAcceptAnt(int value) const;
+    bool canAcceptAnt(int value) const { return current_occupants + value <= capacity; }
+    void arrive() { current_occupants++; }
+    void depart() { current_occupants--; }
 };
 
-// Class Tunnel
+//class tunnel
 class Tunnel {
-
-private:
-std::shared_ptr<Room> from_room;
-std::shared_ptr<Room> to_room;
-
 public:
-Tunnel(std::shared_ptr<Room> from_room, std::shared_ptr<Room> to_room);
-~Tunnel() = default;
+    std::shared_ptr<Room> from_room;
+    std::shared_ptr<Room> to_room;
 
-std::shared_ptr<Room> getFromRoom() const;
-std::shared_ptr<Room> getToRoom() const;
+    Tunnel(std::shared_ptr<Room> from, std::shared_ptr<Room> to)
+        : from_room(std::move(from)), to_room(std::move(to)) {}
 };
 
-//Class Pathnode
-class PathNode {
-
-private:
-std::shared_ptr<Room> room;
-std::shared_ptr<PathNode> next;
-
-public:
-PathNode(std::shared_ptr<Room> room);
-~PathNode() = default;
-
-std::shared_ptr<Room> getRoom() const;
-std::shared_ptr<PathNode> getNext() const;
-void setNext(std::shared_ptr<PathNode> next);
-};
-
-//Class ant
+//class ant
 class Ant {
-
-private:
-int id;
-std::shared_ptr<PathNode> current_path_node;
-
 public:
-Ant(int id, std::shared_ptr<PathNode> starting_node);
-~Ant() = default;
+    int id;
+    std::shared_ptr<Room> current_room;
 
-int getId() const;
-std::shared_ptr<PathNode> getCurrentPathNode() const;
-void setCurrentPathNode(std::shared_ptr<PathNode> node);
+    Ant(int id, std::shared_ptr<Room> starting_room)
+        : id(id), current_room(std::move(starting_room)) {}
 };
 
-//class AntHill
+// class anthill
 class AntHill {
-
 private:
-std::unordered_map<int, std::shared_ptr<Room>> rooms;
-std::vector<std::shared_ptr<Tunnel>> tunnels;
-std::vector<std::shared_ptr<Ant>> ants;
+    std::unordered_map<std::string, std::shared_ptr<Room>> rooms;
+    std::vector<std::shared_ptr<Tunnel>> tunnels;
+    std::vector<std::shared_ptr<Ant>> ants;
 
 public:
-AntHill();
-~AntHill() = default;
+    void addRoom(std::string name, int capacity);
+    void addTunnel(std::string from, std::string to);
+    void addAnt(std::shared_ptr<Ant> ant);
+    void simulateMovement();
 
-void addRoom(const std::string& name, int capacity);
-void addTunnel(const std::string& from, const std::string& to);
-void addAnt(const std::shared_ptr<Ant>& ant);
-
-std::shared_ptr<Room> getRoom(const std::string& name);
-std::vector<std::shared_ptr<Room>> getAdjacentRooms(const std::string& room_name);
-
-void simulateMovement();
-void printState() const;
-std::shared_ptr<PathNode> computeOptimalPath(const std::string& start, const std::string& end);
+    std::shared_ptr<Room> getRoom(const std::string& name) {
+        auto it = rooms.find(name);
+        if (it != rooms.end()) {
+            return it->second;
+        }
+        return nullptr;
+    }
 };
 
-#endif //ANTS_H
+#endif

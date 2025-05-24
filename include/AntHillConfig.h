@@ -1,9 +1,9 @@
 #ifndef ANTHILLCONFIG_H
 #define ANTHILLCONFIG_H
 
-#include "AntHill.h"
+#include "ants.h"
 
-// Func to config each house
+// Functions to configure each house
 void configureAntHillHouse0(AntHill& anthill);
 void configureAntHillHouse1(AntHill& anthill);
 void configureAntHillHouse2(AntHill& anthill);
