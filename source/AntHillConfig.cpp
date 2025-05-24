@@ -35,7 +35,7 @@ void configureAntHillHouse1(AntHill& anthill) {
     anthill.addTunnel("S2", "Sd");
 
     for (int i = 1; i <= 5; ++i) {
-        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv"))); // Use the getter
+        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv")));
     }
 
     std::cout << "=== Anthill 1 - 5 ants going to sleep ===" << std::endl;
@@ -56,7 +56,7 @@ void configureAntHillHouse2(AntHill& anthill) {
     anthill.addTunnel("Sv", "Sd");
 
     for (int i = 1; i <= 5; ++i) {
-        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv"))); // Use the getter
+        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv")));
     }
 
     std::cout << "=== Anthill 2 - 5 ants going to sleep ===" << std::endl;
@@ -71,7 +71,7 @@ void configureAntHillHouse3(AntHill& anthill) {
     anthill.addRoom("S2", 1);
     anthill.addRoom("S3", 1);
     anthill.addRoom("S4", 1);
-    anthill.addRoom("Sd", 1);
+    anthill.addRoom("Sd", 100);
 
     // Add Tunnels
     anthill.addTunnel("Sv", "S1");
@@ -81,7 +81,7 @@ void configureAntHillHouse3(AntHill& anthill) {
     anthill.addTunnel("S2", "S3");
 
     for (int i = 1; i <= 5; ++i) {
-        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv"))); // Use the getter
+        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv")));
     }
 
     std::cout << "=== Anthill 3 - 5 ants going to sleep ===" << std::endl;
@@ -112,7 +112,7 @@ void configureAntHillHouse4(AntHill& anthill) {
     anthill.addTunnel("S6", "Sd");
 
     for (int i = 1; i <= 10; ++i) {
-        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv"))); // Use the getter
+        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv")));
     }
 
     std::cout << "=== Anthill 4 - 10 ants going to sleep ===" << std::endl;
