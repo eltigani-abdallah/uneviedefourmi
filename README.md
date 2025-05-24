@@ -308,6 +308,8 @@ antsfamilylife/
 | + getCurrentOccupants()|
 | + setCurrentOccupants()|
 | + canAcceptAnt()       |
+| + arrive()             |
+| + depart()             |
 +------------------------+
 
 +------------------------+
@@ -322,27 +324,15 @@ antsfamilylife/
 +------------------------+
 
 +------------------------+
-|      PathNode          |
-+------------------------+
-| - room                 |
-| - next                 |
-+------------------------+
-| + PathNode             |
-| + getRoom()            |
-| + getNext()            |
-| + setNext()            |
-+------------------------+
-
-+------------------------+
 |        Ant             |
 +------------------------+
 | - id                   |
-| - current_path_node    |
+| - current_room         |
 +------------------------+
 | + Ant                  |
 | + getId()              |
-| + getCurrentPathNode() |
-| + setCurrentPathNode() |
+| + getCurrentRoom()     |
+| + setCurrentRoom()     |
 +------------------------+
 
 +------------------------+
@@ -360,6 +350,6 @@ antsfamilylife/
 | + getAdjacentRooms()   |
 | + simulateMovement()   |
 | + printState()         |
-| + computeOptimalPath() |
+| + canReachSd()         |
 +------------------------+
 ```
