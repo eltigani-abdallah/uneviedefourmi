@@ -59,7 +59,7 @@ public:
     void simulateMovement();
 
     // Check if a room can reach Sd
-    bool canReachSd(std::shared_ptr<Room> room) {
+    bool canReachSd(const std::shared_ptr<Room>& room) const {
         std::unordered_set<std::shared_ptr<Room>> visited;
         std::queue<std::shared_ptr<Room>> toVisit;
         toVisit.push(room);
