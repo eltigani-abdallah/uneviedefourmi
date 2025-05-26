@@ -4,6 +4,8 @@
 #define ROOM_H
 #include <iostream>
 #include <vector>
+#include "errcodes.h"
+#include <algorithm>
 
 
 class Room {
@@ -14,8 +16,10 @@ class Room {
     std::vector<Room*> nextRoom;
 
     Room(int num, int capacity=1, int currentAmount=0);
-    void showStats();
+
+
     void addNextRoom(std::vector<Room*> rooms);
+
 };
 
 

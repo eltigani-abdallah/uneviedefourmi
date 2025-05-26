@@ -8,6 +8,8 @@
 
 void moveIntoRoom(int amount, Room* prevRoom,Room* nextRoom);
 
-void showRoomPaths(Room* room);
+void showRoomPaths(std::vector<Room*> rooms);
+
+void showStats(std::vector<Room*> rooms);
 
 #endif //COLONY_H

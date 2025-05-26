@@ -11,4 +11,6 @@ add_executable(uneviedefourmi
         room.cpp
         room.hpp
         testyboi.cpp
-        errcodes.h)
+        errcodes.h
+        algo.cpp
+        algo.h)
