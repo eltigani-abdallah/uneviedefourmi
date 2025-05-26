@@ -1,4 +1,5 @@
 #include "ants.h"
+#include <chrono>
 
 // Add room
 void AntHill::addRoom(std::string name, int capacity) {
@@ -18,6 +19,8 @@ void AntHill::addAnt(std::shared_ptr<Ant> ant) {
 
 // To move ants
 void AntHill::simulateMovement() {
+    //chrono start
+    auto start = std::chrono::high_resolution_clock::now();
     int steps = 0;
 
     while (!ants.empty()) {
@@ -67,5 +70,9 @@ void AntHill::simulateMovement() {
         }), ants.end());
     }
 
+    //chrono end
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
     std::cout << "=== Total steps: " << steps << " ===" << std::endl;
+    std::cout << "Duration: " << duration.count() << " seconds" << std::endl;
 }
