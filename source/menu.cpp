@@ -1,6 +1,8 @@
 #include <iostream>
 #include "menu.h"
 
+#include <limits>
+
 //To display the menu
 void displayAntHillMenu() {
     std::cout << "=== Choose your AntHill House ===" << std::endl;
@@ -19,6 +21,15 @@ int getAntHillChoice() {
         displayAntHillMenu();
         std::cout << "Enter your AntHill Choice (0-5): ";
         std::cin >> choice;
+
+        //handle user typing a letter input error
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Please enter a valid number between 0 and 5" << std::endl;
+            continue;
+        }
+        //handle user typing a number not between 0 and 5
         if (choice >= 0 && choice <= 5) break;
         std::cout << "Please enter a valid number between 0 and 5" << std::endl;
     }
