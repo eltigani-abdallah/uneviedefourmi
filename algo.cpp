@@ -25,6 +25,9 @@ void fillNextRooms(Room* currentRoom) {
 
             }
 
+        } else {
+            std::cout <<"Room no."<< possRoom->num<<" is full"<<std::endl;
+            break;
         }
         if (possRoom->dormitory==true && possRoom->currentAmount==possRoom->capacity) {
             std::cout<<"all the ants are asleep now"<<std::endl;
@@ -56,8 +59,14 @@ bool checkForDeadEnd(Room* target) {
 
 
 bool pathsAreFull(Room* target) {
+    int totalItems=target->nextRoomList.size();
+    int itemCount=0;
     for (Room* possRoom: target->nextRoomList) {
         if (roomIsFull(possRoom)) {
+            itemCount++;
+        }
+        if (itemCount==totalItems) {
+            std::cout<<"all paths of Room no. "<<target->num<<" are full."<<std::endl;
             return true;
         }
     }
@@ -71,12 +80,17 @@ void goToSleep(Room* start, Room* goal) {
 
         while (roomIsFull(goal)==false) {
             while (start->currentAmount>0) {
+
                 std::cout <<"+++++Step "<<i<<"+++++"<<std::endl;
                 fillNextRooms(start);
                 i++;
                 // if (i==10) {
                 //     exit(INFINITE_LOOP);
                 // }
+
+                if (pathsAreFull(start)==true) {
+                    break;
+                }
             }
 
 

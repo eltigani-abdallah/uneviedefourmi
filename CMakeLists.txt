@@ -10,7 +10,7 @@ add_executable(uneviedefourmi
         colony.hpp
         room.cpp
         room.hpp
-        testyboi.cpp
+        main.cpp
         errcodes.h
         algo.cpp
         algo.h)
