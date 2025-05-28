@@ -76,3 +76,72 @@ void AntHill::simulateMovement() {
     std::cout << "=== Total steps: " << steps << " ===" << std::endl;
     std::cout << "Duration: " << duration.count() << " seconds" << std::endl;
 }
+
+// variant to test for anthill 7 and 8 :
+void AntHill::simulateMovementVariant() {
+    auto start = std::chrono::high_resolution_clock::now();
+    int steps = 0;
+
+    while (!ants.empty()) {
+        std::vector<std::string> movements;
+
+        for (const auto& ant : ants) {
+            if (ant->current_room->name == "Sd") continue;
+
+            std::vector<std::shared_ptr<Tunnel>> validTunnels;
+
+            // Collecting valid tunnels
+            for (const auto& tunnel : tunnels) {
+                if (tunnel->from_room == ant->current_room && tunnel->to_room->canAcceptAnt(1)) {
+                    validTunnels.push_back(tunnel);
+                }
+            }
+
+            // if valid tunnels found, choose the one who are the nearest to Sd
+            if (!validTunnels.empty()) {
+                std::shared_ptr<Tunnel> chosenTunnel = nullptr;
+
+                // Evaluate Tunnels to choose the best one
+                for (const auto& tunnel : validTunnels) {
+                    if (tunnel->to_room->name == "Sd") {
+                        chosenTunnel = tunnel;
+                        break; // Priority for the tunnel that is direct to Sd
+                    }
+
+                    // if this tunnel can go to sd choose it
+                    if (canReachSd(tunnel->to_room)) {
+                        if (!chosenTunnel || (chosenTunnel && chosenTunnel->to_room->name != "Sd")) {
+                            chosenTunnel = tunnel;
+                        }
+                    }
+                }
+
+                // Move the ant if there is a chosen tunnel
+                if (chosenTunnel) {
+                    movements.push_back("f" + std::to_string(ant->id) + " -- " + ant->current_room->name + " -> " + chosenTunnel->to_room->name);
+                    ant->current_room->depart();
+                    ant->current_room = chosenTunnel->to_room;
+                    ant->current_room->arrive();
+                }
+            }
+        }
+
+        if (!movements.empty()) {
+            steps++;
+            std::cout << "+++ E" << steps << " +++\n";
+            for (const auto& move : movements) {
+                std::cout << move << std::endl;
+            }
+        }
+
+        // Remove ants that are already in Sd
+        ants.erase(std::remove_if(ants.begin(), ants.end(), [](const std::shared_ptr<Ant>& ant) {
+            return ant->current_room->name == "Sd";
+        }), ants.end());
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+    std::cout << "=== Total steps: " << steps << " ===" << std::endl;
+    std::cout << "Duration: " << duration.count() << " seconds" << std::endl;
+}

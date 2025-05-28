@@ -15,6 +15,9 @@ int main() {
             case 3: configureAntHillHouse3(anthill); break;
             case 4: configureAntHillHouse4(anthill); break;
             case 5: configureAntHillHouse5(anthill); break;
+            case 6: configureAntHillHouse6(anthill); break;
+            case 7: configureAntHillHouse7(anthill); break;
+            case 8: configureAntHillHouse8(anthill); break;
             default: std::cout << "Invalid AntHill choice." << std::endl; continue;
         }
 
