@@ -13,14 +13,17 @@ class Room {
     int num;
     int capacity;
     int currentAmount;
-    std::vector<Room*> nextRoom;
+    bool dormitory;
+    std::vector<Room*> nextRoomList;
 
-    Room(int num, int capacity=1, int currentAmount=0);
+    Room(int num, int capacity=1, int currentAmount=0, bool dormitory=false);
 
 
     void addNextRoom(std::vector<Room*> rooms);
 
 };
+
+bool roomIsFull(Room* roomToCheck);
 
 
 

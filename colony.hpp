@@ -6,7 +6,7 @@
 #include "room.hpp"
 
 
-void moveIntoRoom(int amount, Room* prevRoom,Room* nextRoom);
+void moveIntoRoom(int amountToSend, Room* prevRoom,Room* nextRoom);
 
 void showRoomPaths(std::vector<Room*> rooms);
 

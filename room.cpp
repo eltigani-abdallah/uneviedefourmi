@@ -1,10 +1,11 @@
 #include "room.hpp"
 
 
-Room::Room(int num,int capacity, int currentAmount) {
+Room::Room(int num,int capacity, int currentAmount, bool dormitory) {
     this->num = num;
     this->capacity = capacity;
     this->currentAmount = currentAmount;
+    this->dormitory = dormitory;
     if (this->capacity < this->currentAmount) {
         std::cerr << "Capacity exceeded on room " <<this->num<< std::endl;
         exit(INVALID_CONSTRUCTOR);
@@ -18,12 +19,19 @@ Room::Room(int num,int capacity, int currentAmount) {
 
 void Room::addNextRoom(std::vector<Room*> rooms) {
     for (Room* listItem : rooms) {
-        if (std::find(this->nextRoom.begin(), this->nextRoom.end(), listItem)!=this->nextRoom.end()) {
+        if (std::find(this->nextRoomList.begin(), this->nextRoomList.end(), listItem)!=this->nextRoomList.end()) {
             std::cout<<"room number: "<<listItem->num<<"is already in the list. skipping addition"<<std::endl;
             continue;
         }
-        this->nextRoom.push_back(listItem);
+        this->nextRoomList.push_back(listItem);
     }
+}
+
+bool roomIsFull(Room* roomToCheck) {
+    if (roomToCheck->currentAmount == roomToCheck->capacity) {
+        return true;
+    }
+    return false;
 }
 
 

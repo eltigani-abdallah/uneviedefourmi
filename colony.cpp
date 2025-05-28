@@ -1,30 +1,35 @@
 
 #include "colony.hpp"
 
-void moveIntoRoom(int amount, Room* prevRoom,Room* nextRoom){
+void moveIntoRoom(int amountToSend, Room* prevRoom,Room* nextRoom){
 
-    if (prevRoom->currentAmount < amount) {
-        std::cout<<"ERROR: amount exceeds available ants"<<std::endl;
+    if (prevRoom->currentAmount < amountToSend) {
+        std::cout<<"ERROR: amount To Send exceeds available ants"<<std::endl;
+        exit(INVALID_MOVEMENT);
 
     }
-    else if (nextRoom->capacity < amount) {
+
+    if (amountToSend<0) {
+        std::cout<<"how the frick do you want me to send negative ants??"<<std::endl;
+        exit(NEGATIVE_AMOUNT);
+    }
+    if (nextRoom->capacity < amountToSend) {
         std::cout<<"not enough capacity in room number "<<nextRoom->num<<std::endl;
         exit(CAPACITY_EXCEEDED);
     }
-    else {
-        nextRoom->currentAmount += amount;
-        prevRoom->currentAmount -= amount;
 
-        std::cout << "F"<<amount<<"--R"<<prevRoom->num<<"--R"<<nextRoom->num<<std::endl;
-    }
+        nextRoom->currentAmount += amountToSend;
+        prevRoom->currentAmount -= amountToSend;
+
+        std::cout << "F"<<amountToSend<<"--R"<<prevRoom->num<<"--R"<<nextRoom->num<<std::endl;
 }
 
 void showRoomPaths(std::vector<Room*> rooms) {
     for (Room* room: rooms) {
-        if ( room->nextRoom.empty() == 0 ) {
+        if ( room->nextRoomList.empty() == 0 ) {
             std::cout<<"Tunnels for room "<<room->num<<": "<<std::endl;
 
-            for (Room* possPath :room->nextRoom) {
+            for (Room* possPath :room->nextRoomList) {
                 std::cout<<possPath->num<<" ";
             }
             std::cout<<std::endl;

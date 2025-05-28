@@ -3,50 +3,102 @@
 
 void fillNextRooms(Room* currentRoom) {
 
-    int currentAmount = currentRoom->currentAmount;
+    for (Room* possRoom: currentRoom->nextRoomList) {
+        int currentRoomAmount = currentRoom->currentAmount;
 
-    for (Room* possRoom: currentRoom->nextRoom) {
-
-        int nextEmptySpace= possRoom->capacity-possRoom->currentAmount;
+        int nextRoomEmptySpace= possRoom->capacity-possRoom->currentAmount;
 
         bool availableSpace=possRoom->currentAmount < possRoom->capacity;
 
-        if (availableSpace && currentAmount >= nextEmptySpace) {
-            moveIntoRoom(nextEmptySpace, currentRoom, possRoom);
+        if (availableSpace) {
+            if (nextRoomEmptySpace<=currentRoomAmount) {
+                if (nextRoomEmptySpace==0) {
+                    continue;
+                }
+                moveIntoRoom(nextRoomEmptySpace, currentRoom, possRoom);
+
+            } else {
+                if (currentRoomAmount==0) {
+                    continue;
+                }
+                moveIntoRoom(currentRoomAmount, currentRoom, possRoom);
+
+            }
+
+        }
+        if (possRoom->dormitory==true && possRoom->currentAmount==possRoom->capacity) {
+            std::cout<<"all the ants are asleep now"<<std::endl;
+            //exit(0);
         }
         //showStats({possRoom});
+        //fillNextRooms(possRoom);
     }
 }
 
-void checkForDeadEnd(Room* )
+bool checkForDeadEnd(Room* target) {
+    if (target->nextRoomList.empty()==1 && target->dormitory==false) {
+        std::cout<<"Room "<<target->num<<" has no possible paths"<<std::endl;
+        return true;
+    }
+    for (Room* possRoom: target->nextRoomList) {
+        if (possRoom->dormitory==true) {
+            //std::cout<<"The road is clear!"<<std::endl;
+            return false;
+        } if (possRoom->nextRoomList.empty()==1) {
+            std::cout<<"Room "<<possRoom->num<<" is a dead end "<<std::endl;
+            return true;
+        }
+        checkForDeadEnd(possRoom);
+    }
+    return false;
+}
 
-// void headToGoal(Room* start, Room* goal) {
-//     int i=0;
-//
-//     while (goal->currentAmount < goal->capacity) {
-//         std::cout<<"+++++E"<<i<<"+++++"<<std::endl;
-//         while (start->currentAmount >0) {
-//             for (Room* nextRoom: start->nextRoom) {
-//                 if (nextRoom->nextRoom.empty()==1 && nextRoom!=goal) {
-//                     exit(DEAD_END);
-//                 }
-//                 if (nextRoom->currentAmount < nextRoom->capacity && nextRoom->nextRoom.empty()==0) {
-//                     if (start->currentAmount >=nextRoom->capacity-nextRoom->currentAmount) {
-//                         moveIntoRoom(nextRoom->capacity-nextRoom->currentAmount, start, nextRoom);
-//                     } else {
-//                         continue;
-//                     }
-//                 }
-//                 if (nextRoom->nextRoom.empty()==0) {
-//                     headToGoal(nextRoom, goal);
-//                 }
-//             }
-//
-//
-//         }
-//         showStats({start, goal});
-//         i++;
-//     }
-//     std::cout<<"all ants are now asleep, congratulations!"<<std::endl;
-//
-// }
+
+
+bool pathsAreFull(Room* target) {
+    for (Room* possRoom: target->nextRoomList) {
+        if (roomIsFull(possRoom)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void goToSleep(Room* start, Room* goal) {
+    Room* origin=start;
+    if (checkForDeadEnd(start)==false) {
+        int i=0;
+
+        while (roomIsFull(goal)==false) {
+            while (start->currentAmount>0) {
+                std::cout <<"+++++Step "<<i<<"+++++"<<std::endl;
+                fillNextRooms(start);
+                i++;
+                // if (i==10) {
+                //     exit(INFINITE_LOOP);
+                // }
+            }
+
+
+
+            for (Room* possRoom: start->nextRoomList) {
+                // if (start==origin) {
+                //     std::cout<<"entered replacement loop, start unchanged"<<std::endl;
+                // }
+                if (possRoom->currentAmount==0 || start->currentAmount==0) {
+                    start=origin;
+                    //std::cout<<"Room no. "<<start->num<<" of go to sleep changed to origin"<<std::endl;
+                }
+                if (possRoom->dormitory==false && possRoom->currentAmount>0) {
+                    start=possRoom;
+                    //std::cout<<"start of go to sleep changed to room no."<<start->num<<std::endl;
+                    break;
+
+                }
+            showStats({&start,&goal});
+            }
+        }
+    }
+}
+
+
