@@ -30,7 +30,7 @@ void fillNextRooms(Room* currentRoom) {
             std::cout<<"all the ants are asleep now"<<std::endl;
             //exit(0);
         }
-        //showStats({possRoom});
+        showStats({currentRoom,possRoom});
         //fillNextRooms(possRoom);
     }
 }
@@ -67,7 +67,7 @@ bool pathsAreFull(Room* target) {
 void goToSleep(Room* start, Room* goal) {
     Room* origin=start;
     if (checkForDeadEnd(start)==false) {
-        int i=0;
+        int i=1;
 
         while (roomIsFull(goal)==false) {
             while (start->currentAmount>0) {
@@ -95,7 +95,7 @@ void goToSleep(Room* start, Room* goal) {
                     break;
 
                 }
-            showStats({&start,&goal});
+
             }
         }
     }
