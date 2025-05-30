@@ -34,10 +34,10 @@ Here are the representations and movements for each anthill scenario:
 Consider an anthill housing two ants whose rooms (Sv, S1, S2, and Sd)
 are connected to each other as follows:
 
-Sv - S1
-Sv - S2
-S1 - Sd
-S2 - Sd
+* Sv - S1
+* Sv - S2
+* S1 - Sd
+* S2 - Sd
 
 **Graph Representation:**
 ```
@@ -62,9 +62,9 @@ Total steps: 2
 Consider an anthill housing 5 ants whose rooms
 (Sv, S1, S2, and Sd) are connected to each other as follows:
 
-Sv - S1
-S1 - S2
-S2 - Sd
+* Sv - S1
+* S1 - S2
+* S2 - Sd
 
 **Graph Representation:**
 ```
@@ -93,10 +93,10 @@ Total steps: 4
 Consider an anthill housing 5 ants whose rooms
 (Sv, S1, S2, and Sd) are connected to each other as follows:
 
-Sv - S1
-S1 - S2
-S2 - Sd
-Sd - Sv
+* Sv - S1
+* S1 - S2
+* S2 - Sd
+* Sd - Sv
 
 **Graph Representation:**
 ```
@@ -126,11 +126,11 @@ Total steps: 1
 Consider an anthill housing 5 ants whose rooms
 (Sv, S1, S2, S3, S4, and Sd) are connected to each other as follows:
 
-Sv - S1
-S1 - S2
-S4 - Sd
-S1 - S4
-S2 - S3
+* Sv - S1
+* S1 - S2
+* S4 - Sd
+* S1 - S4
+* S2 - S3
 
 **Graph Representation:**
 ```
@@ -160,15 +160,15 @@ Total steps: 7
 Consider an anthill housing 10 ants whose rooms
 (Sv, S1, S2, S3, S4, S5, S6, and Sd) are connected to each other as follows:
 
-S3 - S4
-Sv - S1
-S1 - S2
-S2 - S4
-S4 - S5
-S5 - Sd
-S4 - S6
-S6 - Sd
-S1 - S3
+* S3 - S4
+* Sv - S1
+* S1 - S2
+* S2 - S4
+* S4 - S5
+* S5 - Sd
+* S4 - S6
+* S6 - Sd
+* S1 - S3
 
 **Graph Representation:**
 ```
@@ -213,38 +213,39 @@ Consider an anthill housing 50 ants whose rooms
 (Sv, S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S14, and Sd)
 are connected to each other as follows:
 
-S1 - S2
-S2 - S3
-S3 - S4
-S4 - Sd
-Sv - S1
-S2 - S5
-S5 - S4
-S13 - Sd
-S8 - S12
-S12 - S13
-S6 - S7
-S7 - S9
-S9 - S14
-S14 - Sd
-S7 - S10
-S10 - S14
-S1 - S6
-S6 - S8
-S8 - S11
-S11 - S13
+* S1 - S2
+* S2 - S3
+* S3 - S4
+* S4 - Sd
+* Sv - S1
+* S2 - S5
+* S5 - S4
+* S13 - Sd
+* S8 - S12
+* S12 - S13
+* S6 - S7
+* S7 - S9
+* S9 - S14
+* S14 - Sd
+* S7 - S10
+* S10 - S14
+* S1 - S6
+* S6 - S8
+* S8 - S11
+* S11 - S13
 
-Room S1 has a capacity of 8 ants. Rooms S3, S5, S7, and S14 each have a maximum capacity of two ants.
-Rooms S2, S4, S6, and S13 each have a maximum capacity of four ants.
-Room S8 has a capacity of five ants.
-The remaining rooms have a capacity of one ant (S9, S10, S11, and S12).
+* Room S1 has a capacity of 8 ants. 
+* Rooms S3, S5, S7, and S14 each have a maximum capacity of two ants.
+* Rooms S2, S4, S6, and S13 each have a maximum capacity of four ants.
+* Room S8 has a capacity of five ants.
+* The remaining rooms have a capacity of one ant (S9, S10, S11, and S12).
 
 **Graph Representation:**
 ```
 Sv __ S1(8) __ S2(4) __ S3(2) __ S4(4) _________  Sd
            |        |           |                 |
-	       |        |__ S5(2) __|                 |
-	       |                                      |
+       |        |__ S5(2) __|                 |
+       |                                      |
            |__ S6(4) __ S7(2) __ S9 ___           |   
                     |        |         |          |
                     |        |__ S10 __| S14(2) __|
@@ -364,24 +365,28 @@ Consider an anthill housing 50 ants whose rooms
 (Sv, S1, S2, S3, S4, S5, S6, S7, S8, S9 and Sd)
 are connected to each other as follows:
 
-Sv - S1
-Sv - S2
-S1 - S6
-S1 - S8
-S2 - S7
-S3 - S4
-S3 - S5
-S3 - S8
-S3 - S9
-S4 - S5
-S4 - Sd
-S5 - S6
-S6 - S7
-S7 - S9
-S9 - Sd
+* Sv - S1
+* Sv - S2
+* S1 - S6
+* S1 - S8
+* S2 - S7
+* S3 - S4
+* S3 - S5
+* S3 - S8
+* S3 - S9
+* S4 - S5
+* S4 - Sd
+* S5 - S6
+* S6 - S7
+* S7 - S9
+* S9 - Sd
 
-Room S1 and S7 has a capacity of 5 ants.
-S2 : 6 ants, S3 : one ant, S4: 3 ants, S5 and S9 : 2 ants, S6 and S8 : 4 ants.
+* Room S1 and S7 has a capacity of 5 ants.
+* S2 : 6 ants.
+* S3 : one ant.
+* S4: 3 ants.
+* S5 and S9 : 2 ants each.
+* S6 and S8 : 4 ants each.
 
 **Graph Representation:**
 ```
@@ -398,44 +403,43 @@ Consider an anthill housing 100 ants whose rooms
 (Sv, S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15, S16, S17, S18, S19, S20, S21 and Sd)
 are connected to each other as follows:
 
-Sv - S1
-S1 - S2
-S2 - S3
-S3 - S4
-S4 - S5
-S5 - Sd
-Sv - S6  
-S6 - S7
-S7 - S8
-S8 - S9
-S9 - S10
-S10 - Sd
-Sv - S11
-S11 - S12
-S12 - S13
-S13 - S14
-S14 - S15
-S15 - Sd
-Sv - S16
-S16 - S17
-S17 - S18
-S18 - S19
-S19 - S20
-S20 - Sd
-S21 - S3
-S21 - S8
-S21 - S13
-S21 - S18
+* Sv - S1
+* S1 - S2
+* S2 - S3
+* S3 - S4
+* S4 - S5
+* S5 - Sd
+* Sv - S6  
+* S6 - S7
+* S7 - S8
+* S8 - S9
+* S9 - S10
+* S10 - Sd
+* Sv - S11
+* S11 - S12
+* S12 - S13
+* S13 - S14
+* S14 - S15
+* S15 - Sd
+* Sv - S16
+* S16 - S17
+* S17 - S18
+* S18 - S19
+* S19 - S20
+* S20 - Sd
+* S21 - S3
+* S21 - S8
+* S21 - S13
+* S21 - S18
 
-
-Room S1, S2, S3 :  has a capacity of 50 ants each.
-Room S4, S5, S15, S16 :  has a capacity of 1 ant each.
-Room S6, S7, S11, S12 : has a capacity of 3 ants each.
-Room S8 has a capacity of 7 ants.
-Room S9, S10, S19, S20 has a capacity of 5 ants.
-Room S13, S18 has a capacity of 10 ants each.
-Room S14 has a capacity of 20 ants.
-Room S17, S21 has a capacity of 30 ants each.
+* Room S1, S2, S3 :  has a capacity of 50 ants each.
+* Room S4, S5, S15, S16 :  has a capacity of 1 ant each.
+* Room S6, S7, S11, S12 : has a capacity of 3 ants each.
+* Room S8 has a capacity of 7 ants.
+* Room S9, S10, S19, S20 has a capacity of 5 ants.
+* Room S13, S18 has a capacity of 10 ants each.
+* Room S14 has a capacity of 20 ants.
+* Room S17, S21 has a capacity of 30 ants each.
 
 **Graph Representation:**
 ```
@@ -457,57 +461,57 @@ Consider an anthill housing 30 ants whose rooms
 (Sv, S1, S2, S3, S4, S5, S6, S7, S8, S9, S10 and Sd)
 are connected to each other as follows:
 
-Sv - S1
-Sv - S2
-Sv - S3
-Sv - S4
-Sv - S5
-Sv - S6
-Sv - S7
-Sv - S8
-S1 - S2
-S1 - S3
-S1 - S4
-S1 - S5
-S1 - S6
-S1 - S7
-S1 - S8
-S1 - S9
-S2 - S3
-S2 - S4
-S2 - S5
-S2 - S6
-S2 - S7
-S2 - S8
-S2 - S9
-S3 - S4
-S3 - S5
-S3 - S6
-S3 - S7
-S3 - S8
-S3 - S9
-S4 - S5
-S4 - S6
-S4 - S7
-S4 - S8
-S4 - S9
-S5 - S6
-S5 - S7
-S5 - S8
-S5 - S9
-S6 - S7
-S6 - S8
-S6 - S9
-S7 - S8
-S7 - S9
-S8 - S9
-S9 - S10
-S10 - Sd
+* Sv - S1
+* Sv - S2
+* Sv - S3
+* Sv - S4
+* Sv - S5
+* Sv - S6
+* Sv - S7
+* Sv - S8
+* S1 - S2
+* S1 - S3
+* S1 - S4
+* S1 - S5
+* S1 - S6
+* S1 - S7
+* S1 - S8
+* S1 - S9
+* S2 - S3
+* S2 - S4
+* S2 - S5
+* S2 - S6
+* S2 - S7
+* S2 - S8
+* S2 - S9
+* S3 - S4
+* S3 - S5
+* S3 - S6
+* S3 - S7
+* S3 - S8
+* S3 - S9
+* S4 - S5
+* S4 - S6
+* S4 - S7
+* S4 - S8
+* S4 - S9
+* S5 - S6
+* S5 - S7
+* S5 - S8
+* S5 - S9
+* S6 - S7
+* S6 - S8
+* S6 - S9
+* S7 - S8
+* S7 - S9
+* S8 - S9
+* S9 - S10
+* S10 - Sd
 
-Room S1, S5 :  has a capacity of 4 ants each.
-Room S2, S4, S8 :  has a capacity of 3 ants each.
-Room S3, S6, S7 : has a capacity of 2 ants each.
-Room S9, S10 has a capacity of 5 ants each.
+* Room S1, S5 :  has a capacity of 4 ants each.
+* Room S2, S4, S8 :  has a capacity of 3 ants each.
+* Room S3, S6, S7 : has a capacity of 2 ants each.
+* Room S9, S10 has a capacity of 5 ants each.
 
 **Graph Representation:**
 ```
