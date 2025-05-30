@@ -456,7 +456,7 @@ are connected to each other as follows:
  
 
 ```
-### Anthill 7
+### Anthill 8
 Consider an anthill housing 30 ants whose rooms
 (Sv, S1, S2, S3, S4, S5, S6, S7, S8, S9, S10 and Sd)
 are connected to each other as follows:
