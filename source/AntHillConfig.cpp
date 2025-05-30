@@ -17,7 +17,7 @@ void configureAntHillHouse0(AntHill& anthill) {
     }
 
     std::cout << "=== Anthill 0 - 2 ants going to sleep ===" << std::endl;
-    anthill.simulateMovement();
+   anthill.simulateMovement();
 }
 
 // Configure Anthill house 1
@@ -258,14 +258,14 @@ void configureAntHillHouse7(AntHill& anthill) {
     anthill.addTunnel("S11", "S12");
     anthill.addTunnel("S12", "S13");
     anthill.addTunnel("S13", "S14");
-    anthill.addTunnel("S13", "S21");
+    anthill.addTunnel("S21", "S13");
     anthill.addTunnel("S14", "S15");
     anthill.addTunnel("S15", "Sd");
     anthill.addTunnel("Sv", "S16");
     anthill.addTunnel("S16", "S17");
     anthill.addTunnel("S17", "S18");
     anthill.addTunnel("S18", "S19");
-    anthill.addTunnel("S18", "S21");
+    anthill.addTunnel("S21", "S18");
     anthill.addTunnel("S19", "S20");
     anthill.addTunnel("S20", "Sd");
 
@@ -274,7 +274,7 @@ void configureAntHillHouse7(AntHill& anthill) {
         anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv")));
     }
     std::cout << "=== Anthill 7 - 100 ants going to sleep - at-ant ===" << std::endl;
-    anthill.simulateMovementVariant();
+    anthill.simulateMovement();
 }
 
 //Bonus try again : Valentin's Config : everything everywhere
@@ -347,5 +347,5 @@ void configureAntHillHouse8(AntHill& anthill) {
     }
 
     std::cout << "=== Anthill 8 - 30 ants going to sleep - Everything Everywhere ===" << std::endl;
-    anthill.simulateMovementVariant();
+    anthill.simulateMovement();
 }
