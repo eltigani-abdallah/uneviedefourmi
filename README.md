@@ -535,7 +535,7 @@ are connected to each other as follows:
                                      |
                                     S10(5)
                                      |
-		            	             Sd						
+                                     Sd						
 
 ```
 
