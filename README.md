@@ -576,11 +576,6 @@ antsfamilylife/
 | - capacity             |
 | - current_occupants    | 
 +------------------------+
-| + Room                 |
-| + getName()            |
-| + getCapacity()        |
-| + getCurrentOccupants()|
-| + setCurrentOccupants()|
 | + canAcceptAnt()       |
 | + arrive()             |
 | + depart()             |
@@ -592,21 +587,12 @@ antsfamilylife/
 | - from_room            |
 | - to_room              |
 +------------------------+
-| + Tunnel               |
-| + getFromRoom()        |
-| + getToRoom()          |
-+------------------------+
 
 +------------------------+
 |        Ant             |
 +------------------------+
 | - id                   |
 | - current_room         |
-+------------------------+
-| + Ant                  |
-| + getId()              |
-| + getCurrentRoom()     |
-| + setCurrentRoom()     |
 +------------------------+
 
 +------------------------+
@@ -616,14 +602,11 @@ antsfamilylife/
 | - tunnels              |
 | - ants                 |
 +------------------------+
-| + AntHill              |
 | + addRoom()            |
 | + addTunnel()          |
 | + addAnt()             | 
 | + getRoom()            |
-| + getAdjacentRooms()   |
 | + simulateMovement()   |
-| + printState()         |
 | + canReachSd()         |
 +------------------------+
 
