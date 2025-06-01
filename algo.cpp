@@ -4,6 +4,9 @@
 void fillNextRooms(Room* currentRoom) {
 
     for (Room* possRoom: currentRoom->nextRoomList) {
+        if (possRoom->deadend==true) {
+            continue;
+        }
         int currentRoomAmount = currentRoom->currentAmount;
 
         int nextRoomEmptySpace= possRoom->capacity-possRoom->currentAmount;
@@ -37,24 +40,54 @@ void fillNextRooms(Room* currentRoom) {
         //fillNextRooms(possRoom);
     }
 }
-
-bool checkForDeadEnd(Room* target) {
-    if (target->nextRoomList.empty()==1 && target->dormitory==false) {
-        std::cout<<"Room "<<target->num<<" has no possible paths"<<std::endl;
+bool isDeadEnd(Room* deadEnd) {
+    if (deadEnd->nextRoomList.empty()==true && deadEnd->dormitory==false) {
+        deadEnd->deadend=true;
         return true;
-    }
-    for (Room* possRoom: target->nextRoomList) {
-        if (possRoom->dormitory==true) {
-            //std::cout<<"The road is clear!"<<std::endl;
-            return false;
-        } if (possRoom->nextRoomList.empty()==1) {
-            std::cout<<"Room "<<possRoom->num<<" is a dead end "<<std::endl;
-            return true;
-        }
-        checkForDeadEnd(possRoom);
     }
     return false;
 }
+
+void markDeadEnds(Room* target) {
+    if (isDeadEnd(target)==true && target->dormitory==false) {
+        std::cout<<"Room "<<target->num<<" has no possible paths"<<std::endl;
+    }
+
+    int checkedCount=0;
+
+
+    for (Room* possRoom: target->nextRoomList) {
+        markDeadEnds(possRoom);
+
+        int checkedRoomNum = possRoom->num;
+        bool isDorm=possRoom->dormitory;
+        bool isDeadEnd=possRoom->deadend;
+
+        if (isDorm==true) {
+            //std::cout<<"Dorm reached from room number: "<<target->num<<std::endl;
+            continue;
+        }
+
+        if (isDeadEnd==true && isDorm==false) {
+            std::cout<<"Room "<<checkedRoomNum<<" is a dead end "<<std::endl;
+            checkedCount++;
+
+        }
+    }
+
+    int nexRoomsCount=target->nextRoomList.size();
+    bool targetIsDorm=target->dormitory;
+    int targetNum=target->num;
+
+    if (checkedCount==nexRoomsCount && targetIsDorm==false) {
+        target->deadend=true;
+        std::cout<<"room number: "<<targetNum<<" has been marked as a dead end because all children are dead"<<std::endl;
+        std::cout<<"type F in the chat to pay respects"<<std::endl;
+    }
+
+}
+
+
 
 
 
@@ -74,31 +107,33 @@ bool pathsAreFull(Room* target) {
 }
 
 void goToSleep(Room* start, Room* goal) {
+    markDeadEnds(start);
     Room* origin=start;
-    if (checkForDeadEnd(start)==false) {
         int i=1;
-
         while (roomIsFull(goal)==false) {
             while (start->currentAmount>0) {
-
+                if (start->deadend==true) {
+                    continue;
+                }
                 std::cout <<"+++++Step "<<i<<"+++++"<<std::endl;
                 fillNextRooms(start);
                 i++;
-                // if (i==10) {
-                //     exit(INFINITE_LOOP);
-                // }
+                if (i==100) {
+                    exit(INFINITE_LOOP);
+                }
 
                 if (pathsAreFull(start)==true) {
                     break;
                 }
             }
 
-
-
             for (Room* possRoom: start->nextRoomList) {
                 // if (start==origin) {
                 //     std::cout<<"entered replacement loop, start unchanged"<<std::endl;
                 // }
+                if (possRoom->deadend==true) {
+                    continue;
+                }
                 if (possRoom->currentAmount==0 || start->currentAmount==0) {
                     start=origin;
                     //std::cout<<"Room no. "<<start->num<<" of go to sleep changed to origin"<<std::endl;
@@ -113,6 +148,6 @@ void goToSleep(Room* start, Room* goal) {
             }
         }
     }
-}
+
 
 

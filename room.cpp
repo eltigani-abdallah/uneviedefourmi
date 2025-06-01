@@ -1,7 +1,7 @@
 #include "room.hpp"
 
 
-Room::Room(int num,int capacity, int currentAmount, bool dormitory) {
+Room::Room(int num,int capacity, int currentAmount,bool dormitory) {
     this->num = num;
     this->capacity = capacity;
     this->currentAmount = currentAmount;
@@ -14,6 +14,8 @@ Room::Room(int num,int capacity, int currentAmount, bool dormitory) {
         std::cerr<<this->num<< "has negative ants, physically impossible"<<std::endl;
         exit(NEGATIVE_AMOUNT);
     }
+
+
 };
 
 
@@ -24,6 +26,16 @@ void Room::addNextRoom(std::vector<Room*> rooms) {
             continue;
         }
         this->nextRoomList.push_back(listItem);
+    }
+}
+
+void Room::addPrevRoom(std::vector<Room*> rooms) {
+    for (Room* listItem : rooms) {
+        if (std::find(this->prevRoomList.begin(), this->prevRoomList.end(), listItem)!=this->prevRoomList.end()) {
+            std::cout<<"room number: "<<listItem->num<<"is already in the list. skipping addition"<<std::endl;
+            continue;
+        }
+        this->prevRoomList.push_back(listItem);
     }
 }
 
