@@ -1,47 +1,81 @@
-#pragma once
+#ifndef ANTS_HPP
+#define ANTS_HPP
+
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <memory>
 #include <queue>
+#include <stack>
+#include <unordered_set>
 
-class Salle {
+// The Room class represents a room in the anthill
+class Room {
+private:
+    std::string name;
+    int capacity;
+    int current_occupants;
+
 public:
-    std::string nom;
-    int capacite;
-    std::vector<std::string> voisins;
-     std::vector<std::string> getVoisins() const { return voisins; }
-    Salle() : nom(""), capacite(0) {}
-    Salle(const std::string& nom, int capacite = 1);
-    void ajouterConnexion(const std::string& destination);
+    Room(std::string name, int capacity);
+
+    std::string getName() const;
+    int getCapacity() const;
+    int getCurrentOccupants() const;
+
+    bool canAcceptAnt(int value) const;
+    void arrive(int value = 1);
+    void depart(int value = 1);
+    bool isEmpty() const;
+    bool isFull() const;
 };
 
+// The Tunnel class represents a tunnel between rooms
 class Tunnel {
-public:
-    std::string depuis;
-    std::string vers;
+private:
+    std::shared_ptr<Room> from_room;
+    std::shared_ptr<Room> to_room;
 
-    Tunnel(const std::string& d, const std::string& v);
+public:
+    Tunnel(std::shared_ptr<Room> from, std::shared_ptr<Room> to);
+
+    std::shared_ptr<Room> getFromRoom() const;
+    std::shared_ptr<Room> getToRoom() const;
 };
 
-class Fourmi {
-public:
-    std::string nom;
-    std::string position;
+// The Ant class represents an ant
+class Ant {
+private:
+    int id;
+    std::shared_ptr<Room> current_room;
 
-    Fourmi(const std::string& nom, const std::string& start);
+public:
+    Ant(int id, std::shared_ptr<Room> starting_room);
+
+    int getId() const;
+    std::shared_ptr<Room> getCurrentRoom() const;
+    void setCurrentRoom(std::shared_ptr<Room> room);
 };
 
-class Fourmiliere {
+// The AntHill class represents the anthill
+class AntHill {
+private:
+    std::unordered_map<std::string, std::shared_ptr<Room>> rooms;
+    std::vector<std::shared_ptr<Tunnel>> tunnels;
+    std::vector<std::shared_ptr<Ant>> ants;
+
 public:
-    std::unordered_map<std::string, Salle> salles;
-    std::vector<Fourmi> fourmis;
-    std::vector<std::string> getVoisins(const std::string& nomSalle) {
-    return salles[nomSalle].voisins;
-    }
-    void ajouterSalle(const std::string& nom, int capacite = 1);
-    void ajouterTunnel(const std::string& depuis, const std::string& vers);
-    void ajouterFourmi(const std::string& nom, const std::string& start);
-    void afficher() const;
-    void bfs(const std::string& depart) const;
-    Salle& getSalle(const std::string& nom); // Ajoute
+    void addRoom(std::string name, int capacity);
+    void addTunnel(std::string from, std::string to);
+    void addAnt(std::shared_ptr<Ant> ant);
+    void simulateMovementWithBFS(); // Simulate ant movement using Breadth-First Search
+    void simulateMovementWithDFS(); // Simulate ant movement using Depth-First Search
+    bool canReachRoom(const std::shared_ptr<Room>& startRoom, const std::string& targetRoomName) const;
+    std::shared_ptr<Room> getRoom(const std::string& name);
 };
+
+// Functions to simulate ant movement using BFS and DFS
+void simulateurBFS(AntHill& anthill);
+void simulateurDFS(AntHill& anthill);
+
+#endif

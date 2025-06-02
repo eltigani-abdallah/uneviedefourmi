@@ -1,131 +1,97 @@
 #include <iostream>
-#include <unordered_map>
-#include <queue>
-#include <stack>
-#include <vector>
-#include <chrono>
-#include <set>
 #include "ants.hpp"
-#include <algorithm>
+#include <chrono>
 
-using namespace std;
-
-
-vector<string> bfs(Fourmiliere& f, const string& start, const string& end) {
-    unordered_map<string, string> parent;
-    queue<string> q;
-    set<string> visited;
-
-    q.push(start);
-    visited.insert(start);
-
-    while (!q.empty()) {
-        string current = q.front(); q.pop();
-        if (current == end) break;
-
-        for (auto& neighbor : f.getVoisins(current)) {
-            if (!visited.count(neighbor)) {
-                visited.insert(neighbor);
-                parent[neighbor] = current;
-                q.push(neighbor);
-            }
+// Function to print the adjacency matrix
+void printAdjacencyMatrix(int matrix[4][4], int size) {
+    std::cout << "Adjacency Matrix:\n";
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            std::cout << matrix[i][j] << " ";
         }
+        std::cout << "\n";
     }
-
-    // Построение пути
-    vector<string> path;
-    string current = end;
-    while (current != start) {
-        path.push_back(current);
-        current = parent[current];
-    }
-    path.push_back(start);
-    reverse(path.begin(), path.end());
-    return path;
 }
 
-void simulation(Fourmiliere& f, vector<vector<string>> chemins) {
-    unordered_map<string, int> occupation = {
-        {"Sv", 5}, {"S1", 0}, {"S2", 0}, {"Sd", 0}
-    };
-
-    struct Fourmi {
-        string nom;
-        string position;
-        queue<string> chemin;
-    };
-
-    vector<Fourmi> fourmis;
-    for (int i = 0; i < chemins.size(); ++i) {
-        Fourmi fmi;
-        fmi.nom = "f" + to_string(i + 1);
-        fmi.position = chemins[i][0];
-        for (size_t j = 1; j < chemins[i].size(); ++j) {
-            fmi.chemin.push(chemins[i][j]);
-        }
-        fourmis.push_back(fmi);
-    }
-
-    int etape = 1;
-    while (true) {
-        bool moved = false;
-        string etapeLog;
-
-        for (auto& fourmi : fourmis) {
-			if (!fourmi.chemin.empty()) {
-            	string next = fourmi.chemin.front();
-        		int cap = f.getSalle(next).capacite;
-                if (occupation[next] < cap) {
-                    occupation[fourmi.position]--;
-                    occupation[next]++;
-                    etapeLog += fourmi.nom + " - " + fourmi.position + " --> " + next + "\n";
-                    fourmi.position = next;
-                    fourmi.chemin.pop();
-                    moved = true;
-                }
+// Function to print connections for each vertex
+void printConnections(int matrix[4][4], std::string vertices[4], int size) {
+    std::cout << "\nConnections for each vertex:\n";
+    for (int i = 0; i < size; i++) {
+        std::cout << vertices[i] << ": ";
+        for (int j = 0; j < size; j++) {
+            if (matrix[i][j]) {
+                std::cout << vertices[j] << " ";
             }
         }
-        if (!moved) break;
-        cout << "\netape " << etape++ << "\n" << etapeLog;
+        std::cout << "\n";
     }
 }
 
 int main() {
-    Fourmiliere fourmiliere;
-    fourmiliere.ajouterSalle("Sv", 5);
-    fourmiliere.ajouterSalle("S1", 1);
-    fourmiliere.ajouterSalle("S2", 1);
-    fourmiliere.ajouterSalle("Sd", 5);
+    AntHill anthill;
 
-    fourmiliere.ajouterTunnel("Sv", "S1");
-    fourmiliere.ajouterTunnel("S1", "S2");
-    fourmiliere.ajouterTunnel("S2", "Sd");
-    fourmiliere.ajouterTunnel("Sv", "Sd");
+    // Adding rooms to the anthill with updated capacities
+    anthill.addRoom("Sv", 5);
+    anthill.addRoom("S1", 1);
+    anthill.addRoom("S2", 1);
+    anthill.addRoom("Sd", 5);
 
-    cout << "=== Variante 1 : Tous directement ===\n";
-    auto chemin_direct = bfs(fourmiliere, "Sv", "Sd");
-    vector<vector<string>> chemins1(5, chemin_direct);
-
-    auto start1 = chrono::high_resolution_clock::now();
-    simulation(fourmiliere, chemins1);
-    auto end1 = chrono::high_resolution_clock::now();
-    chrono::duration<double> duration1 = end1 - start1;
-    cout << "\nTemps d'execution (Variante 1): " << duration1.count() << " secondes\n";
-
-    cout << "\n=== Variante 2 : Un seul fait un detour ===\n";
-    vector<vector<string>> chemins2;
-    for (int i = 0; i < 5; ++i) {
-        if (i == 1) chemins2.push_back(bfs(fourmiliere, "Sv", "Sd"));
-        else chemins2.push_back(chemin_direct);
+    // Adding tunnels between rooms according to the problem statement
+    anthill.addTunnel("Sv", "S1");
+    anthill.addTunnel("S1", "S2");
+    anthill.addTunnel("S2", "Sd");
+    anthill.addTunnel("Sd", "Sv");
+"
+    // Adding ants to the anthill
+    for (int i = 1; i <= 5; ++i) {
+        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv")));
     }
-    chemins2[1] = {"Sv", "S1", "S2", "Sd"};
 
-    auto start2 = chrono::high_resolution_clock::now();
-    simulation(fourmiliere, chemins2);
-    auto end2 = chrono::high_resolution_clock::now();
-    chrono::duration<double> duration2 = end2 - start2;
-    cout << "\nTemps d'execution (Variante 2): " << duration2.count() << " secondes\n";
+    // Simulation using BFS
+    std::cout << "\n=== Simulation BFS ===\n";
+    auto start_bfs = std::chrono::high_resolution_clock::now();
+    simulateurBFS(anthill);
+    auto end_bfs = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration_bfs = end_bfs - start_bfs;
+    std::cout << "\nTime BFS: " << duration_bfs.count() << " seconds\n";
 
+    // Reset for DFS simulation
+    anthill = AntHill();
+    anthill.addRoom("Sv", 5);
+    anthill.addRoom("S1", 1);
+    anthill.addRoom("S2", 1);
+    anthill.addRoom("Sd", 5);
+
+    anthill.addTunnel("Sv", "S1");
+    anthill.addTunnel("S1", "S2");
+    anthill.addTunnel("S2", "Sd");
+    anthill.addTunnel("Sd", "Sv");
+
+    for (int i = 1; i <= 5; ++i) {
+        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv")));
+    }
+
+    // Simulation using DFS
+    std::cout << "\n=== Simulation DFS ===\n";
+    auto start_dfs = std::chrono::high_resolution_clock::now();
+    simulateurDFS(anthill);
+    auto end_dfs = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration_dfs = end_dfs - start_dfs;
+    std::cout << "\nTime DFS: " << duration_dfs.count() << " seconds\n";
+
+    // Graph: vertex names
+    std::string vertexData[4] = {"Sv", "S1", "S2", "Sd"};
+
+    // Adjacency matrix
+    int adjacencyMatrix[4][4] = {
+        {0, 1, 0, 1}, // Sv
+        {1, 0, 1, 0}, // S1
+        {0, 1, 0, 1}, // S2
+        {1, 0, 1, 0}  // Sd
+    };
+
+    std::cout << "\n=== Graph Info (Adjacency Matrix & Connections) ===\n";
+    printAdjacencyMatrix(adjacencyMatrix, 4);
+    printConnections(adjacencyMatrix, vertexData, 4);
     return 0;
-
 }

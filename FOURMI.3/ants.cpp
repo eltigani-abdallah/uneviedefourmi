@@ -1,256 +1,266 @@
 #include "ants.hpp"
 #include <iostream>
+#include <algorithm>
+#include <stack>
 #include <unordered_set>
 #include <queue>
-#include <unordered_map>
-#include <algorithm>
+#include <vector>
 
-// ===== Salle =====
+// Implementation of Room class methods
+Room::Room(std::string name, int capacity) : name(name), capacity(capacity), current_occupants(0) {}
 
-Salle::Salle(const std::string& nom, int capacite)
-    : nom(nom), capacite(capacite), occupants(0) {}
-Salle::Salle() : nom(""), capacite(0), occupants(0) {}
-
-void Salle::ajouterConnexion(const std::string& destination) {
-    voisins.push_back(destination);
+std::string Room::getName() const {
+    return name;
 }
 
-bool Salle::peutEntrer() const {
-    return occupants < capacite;
+int Room::getCapacity() const {
+    return capacity;
 }
 
-void Salle::entrer() {
-    occupants++;
+int Room::getCurrentOccupants() const {
+    return current_occupants;
 }
 
-void Salle::sortir() {
-    if (occupants > 0) occupants--;
+bool Room::canAcceptAnt(int value) const {
+    // Check if the room can accept a given number of ants
+    return current_occupants + value <= capacity;
 }
 
-// ===== Tunnel =====
-
-Tunnel::Tunnel(const std::string& d, const std::string& v)
-    : depuis(d), vers(v) {}
-
-// ===== Fourmi =====
-
-Fourmi::Fourmi(const std::string& nom, const std::string& start)
-    : nom(nom), position(start) {}
-
-bool Fourmi::aTermine() const {
-    return chemin.empty();
-}
-
-void Fourmi::definirChemin(const std::vector<std::string>& c) {
-    chemin = c;
-}
-
-std::string Fourmi::prochaineSalle() const {
-    if (!chemin.empty()) return chemin.front();
-    return "";
-}
-
-void Fourmi::avancer() {
-    if (!chemin.empty()) {
-        position = chemin.front();
-        chemin.erase(chemin.begin());
+void Room::arrive(int value) {
+    // Increase the number of occupants if the room can accept the ants
+    if (canAcceptAnt(value)) {
+        current_occupants += value;
+    } else {
+        std::cout << "Room " << name << " cannot accept more ants." << std::endl;
     }
 }
 
-// ===== Fourmiliere =====
-
-void Fourmiliere::ajouterSalle(const std::string& nom, int capacite) {
-    salles[nom] = Salle(nom, capacite);
+void Room::depart(int value) {
+    // Decrease the number of occupants if there are enough ants to depart
+    if (current_occupants - value >= 0) {
+        current_occupants -= value;
+    } else {
+        std::cout << "Room " << name << " has no ants to depart." << std::endl;
+    }
 }
 
-void Fourmiliere::ajouterTunnel(const std::string& depuis, const std::string& vers) {
-    salles[depuis].ajouterConnexion(vers);
+bool Room::isEmpty() const {
+    // Check if the room is empty
+    return current_occupants == 0;
 }
 
-void Fourmiliere::ajouterFourmi(const std::string& nom, const std::string& start) {
-    fourmis.emplace_back(nom, start);
+bool Room::isFull() const {
+    // Check if the room is full
+    return current_occupants == capacity;
 }
 
-void Fourmiliere::afficher() const {
-    for (const auto& [nom, salle] : salles) {
-        std::cout << nom << " (" << salle.capacite << ") : ";
-        for (const auto& dest : salle.voisins) {
-            std::cout << "-> " << dest << " ";
+// Implementation of Tunnel class methods
+Tunnel::Tunnel(std::shared_ptr<Room> from, std::shared_ptr<Room> to) : from_room(from), to_room(to) {}
+
+std::shared_ptr<Room> Tunnel::getFromRoom() const {
+    return from_room;
+}
+
+std::shared_ptr<Room> Tunnel::getToRoom() const {
+    return to_room;
+}
+
+// Implementation of Ant class methods
+Ant::Ant(int id, std::shared_ptr<Room> starting_room) : id(id), current_room(starting_room) {}
+
+int Ant::getId() const {
+    return id;
+}
+
+std::shared_ptr<Room> Ant::getCurrentRoom() const {
+    return current_room;
+}
+
+void Ant::setCurrentRoom(std::shared_ptr<Room> room) {
+    current_room = room;
+}
+
+// Implementation of AntHill class methods
+void AntHill::addRoom(std::string roomName, int roomCapacity) {
+    // Add a new room to the anthill
+    auto room = std::make_shared<Room>(roomName, roomCapacity);
+    rooms.insert(std::make_pair(roomName, room));
+}
+
+void AntHill::addTunnel(std::string sourceRoomName, std::string destinationRoomName) {
+    // Add a new tunnel connecting two rooms
+    auto sourceRoom = rooms.find(sourceRoomName)->second;
+    auto destinationRoom = rooms.find(destinationRoomName)->second;
+    auto tunnel = std::make_shared<Tunnel>(sourceRoom, destinationRoom);
+    tunnels.emplace_back(tunnel);
+}
+
+void AntHill::addAnt(std::shared_ptr<Ant> newAnt) {
+    // Add a new ant to the anthill
+    ants.emplace_back(newAnt);
+    auto currentRoom = newAnt->getCurrentRoom();
+    currentRoom->arrive();
+}
+
+bool AntHill::canReachRoom(const std::shared_ptr<Room>& startRoom, const std::string& targetRoomName) const {
+    // Check if a room can be reached from a starting room using BFS
+    std::unordered_set<std::shared_ptr<Room>> visited;
+    std::queue<std::shared_ptr<Room>> queue;
+    queue.push(startRoom);
+    visited.insert(startRoom);
+
+    while (!queue.empty()) {
+        auto currentRoom = queue.front();
+        queue.pop();
+
+        if (currentRoom->getName() == targetRoomName) {
+            return true;
         }
-        std::cout << "\n";
-    }
-}
 
-Salle& Fourmiliere::getSalle(const std::string& nom) {
-    return salles.at(nom);
-}
-
-void Fourmiliere::bfs(const std::string& depart) const {
-    std::unordered_set<std::string> visitees;
-    std::queue<std::string> file;
-    file.push(depart);
-
-    while (!file.empty()) {
-        std::string courant = file.front();
-        file.pop();
-
-        if (visitees.find(courant) == visitees.end()) {
-            std::cout << courant << " ";
-            visitees.insert(courant);
-
-            for (const auto& voisin : salles.at(courant).voisins) {
-                file.push(voisin);
+        for (const auto& tunnel : tunnels) {
+            if (tunnel->getFromRoom() == currentRoom && visited.find(tunnel->getToRoom()) == visited.end()) {
+                visited.insert(tunnel->getToRoom());
+                queue.push(tunnel->getToRoom());
             }
         }
     }
-
-    std::cout << "\n";
-}
-
-std::vector<std::string> Fourmiliere::chercherCheminBFS(const std::string& debut, const std::string& fin) const {
-    std::unordered_map<std::string, std::string> parent;
-    std::queue<std::string> file;
-    std::unordered_set<std::string> visite;
-
-    file.push(debut);
-    visite.insert(debut);
-
-    while (!file.empty()) {
-        std::string courant = file.front();
-        file.pop();
-
-        if (courant == fin) break;
-
-        for (const auto& voisin : salles.at(courant).voisins) {
-            if (!visite.count(voisin)) {
-                parent[voisin] = courant;
-                visite.insert(voisin);
-                file.push(voisin);
-            }
-        }
-    }
-
-    std::vector<std::string> chemin;
-    for (std::string at = fin; at != debut; at = parent[at]) {
-        chemin.push_back(at);
-    }
-    chemin.push_back(debut);
-    std::reverse(chemin.begin(), chemin.end());
-    chemin.erase(chemin.begin());
-
-    return chemin;
-}
-
-bool dfsUtil(const std::string& courant, const std::string& fin,
-             std::unordered_set<std::string>& visite,
-             std::unordered_map<std::string, std::string>& parent,
-             const std::map<std::string, Salle>& salles) { // исправлено
-    if (courant == fin) return true;
-
-    visite.insert(courant);
-
-    for (const auto& voisin : salles.at(courant).voisins) {
-        if (!visite.count(voisin)) {
-            parent[voisin] = courant;
-            if (dfsUtil(voisin, fin, visite, parent, salles)) return true;
-        }
-    }
-
     return false;
 }
 
-std::vector<std::string> Fourmiliere::chercherCheminDFS(const std::string& debut, const std::string& fin) const {
-    std::unordered_map<std::string, std::string> parent;
-    std::unordered_set<std::string> visite;
-
-    dfsUtil(debut, fin, visite, parent, salles);
-
-    std::vector<std::string> chemin;
-    for (std::string at = fin; at != debut; at = parent[at]) {
-        chemin.push_back(at);
+std::shared_ptr<Room> AntHill::getRoom(const std::string& name) {
+    // Retrieve a room by its name
+    auto it = rooms.find(name);
+    if (it != rooms.end()) {
+        return it->second;
     }
-    chemin.push_back(debut);
-    std::reverse(chemin.begin(), chemin.end());
-    chemin.erase(chemin.begin());
-
-    return chemin;
+    return nullptr;
 }
 
-void simulateurBFS(Fourmiliere& f) {
-    for (auto& fourmi : f.fourmis) {
-        auto chemin = f.chercherCheminBFS(fourmi.position, "Sd");
-        fourmi.definirChemin(chemin);
+void AntHill::simulateMovementWithBFS() {
+    // Simulate ant movement using BFS
+    int stepCount = 0;
+    bool simulationActive = true;
+
+    while (simulationActive) {
+        std::vector<std::string> stepMoves;
+        bool anyMoves = false;
+        std::vector<std::shared_ptr<Ant>> completedAnts;
+
+        for (auto antIt = ants.begin(); antIt != ants.end(); ++antIt) {
+            auto ant = *antIt;
+            if (ant->getCurrentRoom()->getName() == "Sd") {
+                completedAnts.push_back(ant);
+                continue;
+            }
+
+            std::shared_ptr<Tunnel> tunnelSelected = nullptr;
+            std::vector<std::shared_ptr<Tunnel>> availableTunnels;
+
+            for (const auto& tunnel : tunnels) {
+                if (tunnel->getFromRoom() == ant->getCurrentRoom() && tunnel->getToRoom()->canAcceptAnt(1)) {
+                    availableTunnels.push_back(tunnel);
+                }
+            }
+
+            for (auto tunnelIt = availableTunnels.begin(); tunnelIt != availableTunnels.end(); ++tunnelIt) {
+                auto tunnel = *tunnelIt;
+                if (tunnel->getToRoom()->getName() == "Sd") {
+                    tunnelSelected = tunnel;
+                    break;
+                } else if (!tunnelSelected && canReachRoom(tunnel->getToRoom(), "Sd")) {
+                    tunnelSelected = tunnel;
+                }
+            }
+
+            if (!tunnelSelected && !availableTunnels.empty()) {
+                tunnelSelected = availableTunnels.front();
+            }
+
+            if (tunnelSelected) {
+                std::string moveDescription = "  F " + std::to_string(ant->getId()) + "  -  " + ant->getCurrentRoom()->getName() + " --> " + tunnelSelected->getToRoom()->getName();
+                stepMoves.push_back(moveDescription);
+
+                ant->getCurrentRoom()->depart();
+                ant->setCurrentRoom(tunnelSelected->getToRoom());
+                ant->getCurrentRoom()->arrive();
+
+                anyMoves = true;
+            }
+        }
+
+        for (auto& ant : completedAnts) {
+            ants.erase(std::remove(ants.begin(), ants.end(), ant), ants.end());
+        }
+
+        if (anyMoves) {
+            stepCount++;
+            std::cout << "\nStep " << stepCount << ":" << std::endl;
+            for (const auto& move : stepMoves) {
+                std::cout << move << std::endl;
+            }
+        }
+        simulationActive = !ants.empty();
     }
+}
 
-    int etape = 1;
-    while (true) {
-        bool auMoinsUnMouvement = false;
-        std::vector<std::tuple<Fourmi*, std::string, std::string>> mouvements;
+void AntHill::simulateMovementWithDFS() {
+    // Simulate ant movement using DFS
+    int steps = 0;
+    std::vector<std::string> movements;
 
-        for (auto& fourmi : f.fourmis) {
-            if (!fourmi.aTermine()) {
-                std::string actuelle = fourmi.position;
-                std::string suivante = fourmi.prochaineSalle();
-                if (f.getSalle(suivante).peutEntrer()) {
-                    mouvements.emplace_back(&fourmi, actuelle, suivante);
-                    auMoinsUnMouvement = true;
+    for (auto& ant : ants) {
+        std::stack<std::shared_ptr<Room>> stack;
+        std::unordered_set<std::shared_ptr<Room>> visited;
+        std::unordered_map<std::shared_ptr<Room>, std::shared_ptr<Room>> parent;
+
+        stack.push(ant->getCurrentRoom());
+        visited.insert(ant->getCurrentRoom());
+        parent[ant->getCurrentRoom()] = nullptr;
+
+        while (!stack.empty()) {
+            auto currentRoom = stack.top();
+            stack.pop();
+
+            if (currentRoom->getName() == "Sd") {
+                break;
+            }
+
+            for (auto it = tunnels.rbegin(); it != tunnels.rend(); ++it) {
+                const auto& tunnel = *it;
+                if (tunnel->getFromRoom() == currentRoom && visited.find(tunnel->getToRoom()) == visited.end()) {
+                    visited.insert(tunnel->getToRoom());
+                    stack.push(tunnel->getToRoom());
+                    parent[tunnel->getToRoom()] = currentRoom;
                 }
             }
         }
 
-        if (!auMoinsUnMouvement) break;
-
-        std::cout << "Etape " << etape++ << "\n";
-        for (auto& [ptr, de, vers] : mouvements) {
-            f.getSalle(de).sortir();
-            f.getSalle(vers).entrer();
-            ptr->avancer();
-            std::cout << ptr->nom << " - " << de << " --> " << vers << "\n";
+        std::vector<std::shared_ptr<Room>> path;
+        auto current = getRoom("Sd");
+        while (current != nullptr) {
+            path.push_back(current);
+            current = parent[current];
         }
-        std::cout << "\n";
+
+        std::reverse(path.begin(), path.end());
+
+        for (size_t i = 0; i < path.size() - 1; ++i) {
+            movements.push_back("  F " + std::to_string(ant->getId()) + "  - " + path[i]->getName() + " --> " + path[i+1]->getName());
+        }
+    }
+
+    for (size_t step = 0; step < movements.size(); ++step) {
+        std::cout << "Step " << step + 1 << ":" << std::endl;
+        std::cout << movements[step] << std::endl;
     }
 }
 
-void Fourmiliere::reinitialiserOccupants() {
-    for (auto& [_, salle] : salles) {
-        salle.occupants = 0;
-    }
-    for (auto& fourmi : fourmis) {
-        salles[fourmi.position].entrer();
-    }
+void simulateurBFS(AntHill& anthill) {
+    // Function to simulate ant movement using BFS
+    anthill.simulateMovementWithBFS();
 }
 
-void simulateurDFS(Fourmiliere& f) {
-    std::vector<std::string> chemin = f.chercherCheminDFS("Sv", "Sd");
-    for (auto& fourmi : f.fourmis) {
-        fourmi.definirChemin(chemin);
-    }
-
-    int etape = 1;
-    while (true) {
-        bool auMoinsUnMouvement = false;
-        std::vector<std::tuple<Fourmi*, std::string, std::string>> mouvements;
-
-        for (auto& fourmi : f.fourmis) {
-            if (!fourmi.aTermine()) {
-                std::string actuelle = fourmi.position;
-                std::string suivante = fourmi.prochaineSalle();
-                if (f.getSalle(suivante).peutEntrer()) {
-                    mouvements.emplace_back(&fourmi, actuelle, suivante);
-                    auMoinsUnMouvement = true;
-                }
-            }
-        }
-
-        if (!auMoinsUnMouvement) break;
-
-        std::cout << "Etape " << etape++ << "\n";
-        for (auto& [ptr, de, vers] : mouvements) {
-            f.getSalle(de).sortir();
-            f.getSalle(vers).entrer();
-            ptr->avancer();
-            std::cout << ptr->nom << " - " << de << " --> " << vers << "\n";
-        }
-        std::cout << "\n";
-    }
+void simulateurDFS(AntHill& anthill) {
+    // Function to simulate ant movement using DFS
+    anthill.simulateMovementWithDFS();
 }

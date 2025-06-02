@@ -2,6 +2,7 @@
 #include "ants.hpp"
 #include <chrono>
 
+// Function to print the adjacency matrix
 void printAdjacencyMatrix(int matrix[8][8], int size) {
     std::cout << "Adjacency Matrix:\n";
     for (int i = 0; i < size; i++) {
@@ -12,6 +13,7 @@ void printAdjacencyMatrix(int matrix[8][8], int size) {
     }
 }
 
+// Function to print connections for each vertex
 void printConnections(int matrix[8][8], std::string vertices[8], int size) {
     std::cout << "\nConnections for each vertex:\n";
     for (int i = 0; i < size; i++) {
@@ -26,60 +28,92 @@ void printConnections(int matrix[8][8], std::string vertices[8], int size) {
 }
 
 int main() {
-    std::unordered_map<std::string, Salle> graph = {
-        {"SV", {"SV", 10, 0, {"S1"}}},
-        {"S1", {"S1", 2, 0, {"S2", "S3"}}},
-        {"S2", {"S2", 1, 0, {"S4"}}},
-        {"S3", {"S3", 1, 0, {"S4"}}},
-        {"S4", {"S4", 2, 0, {"S5", "S6"}}},
-        {"S5", {"S5", 1, 0, {"SD"}}},
-        {"S6", {"S6", 1, 0, {"SD"}}},
-        {"SD", {"SD", 10, 0, {}}}
-    };
+    AntHill anthill;
 
-    std::cout << "Graph Traversal:\n";
-    bfs_trouver_chemins(graph, "SV", "SD");
-    dfs_trouver_chemins(graph, "SV", "SD");
+    // Adding rooms to the anthill with updated capacities
+    anthill.addRoom("Sv", 10);
+    anthill.addRoom("S1", 2);
+    anthill.addRoom("S2", 1);
+    anthill.addRoom("S3", 1);
+    anthill.addRoom("S4", 2);
+    anthill.addRoom("S5", 1);
+    anthill.addRoom("S6", 1);
+    anthill.addRoom("Sd", 10);
 
-    std::string vertexData[8] = {"SV", "S1", "S2", "S3", "S4", "S5", "S6", "SD"};
+    // Adding tunnels between rooms according to the problem statement
+    anthill.addTunnel("Sv", "S1");
+    anthill.addTunnel("S1", "S2");
+    anthill.addTunnel("S1", "S3");
+    anthill.addTunnel("S2", "S4");
+    anthill.addTunnel("S3", "S4");
+    anthill.addTunnel("S4", "S5");
+    anthill.addTunnel("S4", "S6");
+    anthill.addTunnel("S5", "Sd");
+    anthill.addTunnel("S6", "Sd");
+
+    // Adding ants to the anthill
+    for (int i = 1; i <= 10; ++i) {
+        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv")));
+    }
+
+    // Simulation using BFS
+    std::cout << "\n=== Simulation BFS ===\n";
+    auto start_bfs = std::chrono::high_resolution_clock::now();
+    simulateurBFS(anthill);
+    auto end_bfs = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration_bfs = end_bfs - start_bfs;
+    std::cout << "\nTime BFS: " << duration_bfs.count() << " seconds\n";
+
+    // Reset for DFS simulation
+    anthill = AntHill();
+    anthill.addRoom("Sv", 10);
+    anthill.addRoom("S1", 2);
+    anthill.addRoom("S2", 1);
+    anthill.addRoom("S3", 1);
+    anthill.addRoom("S4", 2);
+    anthill.addRoom("S5", 1);
+    anthill.addRoom("S6", 1);
+    anthill.addRoom("Sd", 10);
+
+    anthill.addTunnel("Sv", "S1");
+    anthill.addTunnel("S1", "S2");
+    anthill.addTunnel("S1", "S3");
+    anthill.addTunnel("S2", "S4");
+    anthill.addTunnel("S3", "S4");
+    anthill.addTunnel("S4", "S5");
+    anthill.addTunnel("S4", "S6");
+    anthill.addTunnel("S5", "Sd");
+    anthill.addTunnel("S6", "Sd");
+
+    for (int i = 1; i <= 10; ++i) {
+        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv")));
+    }
+
+    // Simulation using DFS
+    std::cout << "\n=== Simulation DFS ===\n";
+    auto start_dfs = std::chrono::high_resolution_clock::now();
+    simulateurDFS(anthill);
+    auto end_dfs = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration_dfs = end_dfs - start_dfs;
+    std::cout << "\nTime DFS: " << duration_dfs.count() << " seconds\n";
+
+    // Graph: vertex names
+    std::string vertexData[8] = {"Sv", "S1", "S2", "S3", "S4", "S5", "S6", "Sd"};
+
+    // Adjacency matrix
     int adjacencyMatrix[8][8] = {
-        {0, 1, 0, 0, 0, 0, 0, 0},  // SV
+        {0, 1, 0, 0, 0, 0, 0, 0},  // Sv
         {1, 0, 1, 1, 0, 0, 0, 0},  // S1
         {0, 1, 0, 0, 1, 0, 0, 0},  // S2
         {0, 1, 0, 0, 1, 0, 0, 0},  // S3
         {0, 0, 1, 1, 0, 1, 1, 0},  // S4
         {0, 0, 0, 0, 1, 0, 0, 1},  // S5
         {0, 0, 0, 0, 1, 0, 0, 1},  // S6
-        {0, 0, 0, 0, 0, 1, 1, 0}   // SD
+        {0, 0, 0, 0, 0, 1, 1, 0}   // Sd
     };
 
-    std::cout << "\nVertices: ";
-    for (int i = 0; i < 8; i++) {
-        std::cout << vertexData[i] << " ";
-    }
-    std::cout << "\n\n";
-
+    std::cout << "\n=== Graph Info (Adjacency Matrix & Connections) ===\n";
     printAdjacencyMatrix(adjacencyMatrix, 8);
     printConnections(adjacencyMatrix, vertexData, 8);
-
-
-    std::cout << "===Simulation BFS====\n";
-    auto start = std::chrono::high_resolution_clock::now();
-    simulationBFS(adjacencyMatrix, 8);
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << duration.count() << " microseconds\n";
-
-    std::cout << "===Simulation DFS====\n";
-    start = std::chrono::high_resolution_clock::now();
-    simulationDFS(adjacencyMatrix, 8);
-    end = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << duration.count() << " microseconds\n";
-
-    void simulationBFS(int matrix[8][8], int size);
-    void simulationDFS(int matrix[8][8], int size);
-    simulerDeplacementDesFourmis(graph, 10);
-
     return 0;
 }

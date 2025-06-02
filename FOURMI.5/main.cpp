@@ -1,113 +1,168 @@
 #include <iostream>
-#include <chrono>
 #include "ants.hpp"
+#include <chrono>
+
+// Function to print the adjacency matrix
+void printAdjacencyMatrix(int matrix[16][16], int size) {
+    std::cout << "Adjacency Matrix:\n";
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            std::cout << matrix[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+}
+
+// Function to print connections for each vertex
+void printConnections(int matrix[16][16], std::string vertices[16], int size) {
+    std::cout << "\nConnections for each vertex:\n";
+    for (int i = 0; i < size; i++) {
+        std::cout << vertices[i] << ": ";
+        for (int j = 0; j < size; j++) {
+            if (matrix[i][j]) {
+                std::cout << vertices[j] << " ";
+            }
+        }
+        std::cout << "\n";
+    }
+}
 
 int main() {
-    Fourmiliere fourmiliere;
+    AntHill anthill;
 
-    // Ajout des salles
-    fourmiliere.ajouterSalle("Sv", 50);  // Vestibule
-    fourmiliere.ajouterSalle("S1", 8);
-    fourmiliere.ajouterSalle("S2", 4);
-    fourmiliere.ajouterSalle("S3", 2);
-    fourmiliere.ajouterSalle("S4", 4);
-    fourmiliere.ajouterSalle("S5", 2);
-    fourmiliere.ajouterSalle("S6", 4);
-    fourmiliere.ajouterSalle("S7", 2);
-    fourmiliere.ajouterSalle("S8", 5);
-    fourmiliere.ajouterSalle("S9", 1);
-    fourmiliere.ajouterSalle("S10", 1);
-    fourmiliere.ajouterSalle("S11", 1);
-    fourmiliere.ajouterSalle("S12", 1);
-    fourmiliere.ajouterSalle("S13", 4);
-    fourmiliere.ajouterSalle("S14", 2);
-    fourmiliere.ajouterSalle("Sd", 50);  // Dortoir
+    // Adding rooms to the anthill
+    anthill.addRoom("Sv", 100);
+    anthill.addRoom("S1", 8);
+    anthill.addRoom("S2", 4);
+    anthill.addRoom("S3", 2);
+    anthill.addRoom("S4", 4);
+    anthill.addRoom("S5", 2);
+    anthill.addRoom("S6", 4);
+    anthill.addRoom("S7", 2);
+    anthill.addRoom("S8", 5);
+    anthill.addRoom("S9", 1);
+    anthill.addRoom("S10", 1);
+    anthill.addRoom("S11", 1);
+    anthill.addRoom("S12", 1);
+    anthill.addRoom("S13", 4);
+    anthill.addRoom("S14", 2);
+    anthill.addRoom("Sd", 100);
 
-    // Ajout des tunnels
-    fourmiliere.ajouterTunnel("Sv", "S1");
-    fourmiliere.ajouterTunnel("S1", "S2");
-    fourmiliere.ajouterTunnel("S1", "S6");
-    fourmiliere.ajouterTunnel("S2", "S3");
-    fourmiliere.ajouterTunnel("S2", "S5");
-    fourmiliere.ajouterTunnel("S3", "S4");
-    fourmiliere.ajouterTunnel("S5", "S4");
-    fourmiliere.ajouterTunnel("S4", "Sd");
-    fourmiliere.ajouterTunnel("S6", "S7");
-    fourmiliere.ajouterTunnel("S7", "S9");
-    fourmiliere.ajouterTunnel("S9", "S14");
-    fourmiliere.ajouterTunnel("S7", "S10");
-    fourmiliere.ajouterTunnel("S10", "S14");
-    fourmiliere.ajouterTunnel("S14", "Sd");
-    fourmiliere.ajouterTunnel("S8", "S11");
-    fourmiliere.ajouterTunnel("S8", "S12");
-    fourmiliere.ajouterTunnel("S11", "S13");
-    fourmiliere.ajouterTunnel("S12", "S13");
-    fourmiliere.ajouterTunnel("S13", "Sd");
+    // Adding tunnels between rooms
+    anthill.addTunnel("Sv", "S1");
+    anthill.addTunnel("S1", "S2");
+    anthill.addTunnel("S1", "S6");
+    anthill.addTunnel("S2", "S3");
+    anthill.addTunnel("S2", "S5");
+    anthill.addTunnel("S3", "S4");
+    anthill.addTunnel("S5", "S4");
+    anthill.addTunnel("S4", "Sd");
+    anthill.addTunnel("S6", "S7");
+    anthill.addTunnel("S6", "S8");
+    anthill.addTunnel("S7", "S9");
+    anthill.addTunnel("S7", "S10");
+    anthill.addTunnel("S9", "S14");
+    anthill.addTunnel("S10", "S14");
+    anthill.addTunnel("S14", "Sd");
+    anthill.addTunnel("S8", "S11");
+    anthill.addTunnel("S8", "S12");
+    anthill.addTunnel("S11", "S13");
+    anthill.addTunnel("S12", "S13");
+    anthill.addTunnel("S13", "Sd");
 
-    // Ajout des fourmis
+    // Adding ants to the anthill
     for (int i = 1; i <= 50; ++i) {
-        fourmiliere.ajouterFourmi("f" + std::to_string(i), "Sv");
+        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv")));
     }
 
-    std::cout << "=== Simulation BFS ===\n";
+    // Simulation using BFS
+    std::cout << "\n=== Simulation BFS ===\n";
     auto start_bfs = std::chrono::high_resolution_clock::now();
-    simulateurBFS(fourmiliere);
+    simulateurBFS(anthill);
     auto end_bfs = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration_bfs = end_bfs - start_bfs;
-    std::cout << "Temps BFS : " << duration_bfs.count() << " secondes\n";
+    std::cout << "\nTime BFS: " << duration_bfs.count() << " seconds\n";
 
-    // Réinitialisation de la fourmilière pour DFS
-    Fourmiliere fourmiliereDFS;
+    // Reset for DFS simulation
+    anthill = AntHill();
+    anthill.addRoom("Sv", 100);
+    anthill.addRoom("S1", 8);
+    anthill.addRoom("S2", 4);
+    anthill.addRoom("S3", 2);
+    anthill.addRoom("S4", 4);
+    anthill.addRoom("S5", 2);
+    anthill.addRoom("S6", 4);
+    anthill.addRoom("S7", 2);
+    anthill.addRoom("S8", 5);
+    anthill.addRoom("S9", 1);
+    anthill.addRoom("S10", 1);
+    anthill.addRoom("S11", 1);
+    anthill.addRoom("S12", 1);
+    anthill.addRoom("S13", 4);
+    anthill.addRoom("S14", 2);
+    anthill.addRoom("Sd", 100);
 
-    fourmiliereDFS.ajouterSalle("Sv", 50);
-    fourmiliereDFS.ajouterSalle("S1", 8);
-    fourmiliereDFS.ajouterSalle("S2", 4);
-    fourmiliereDFS.ajouterSalle("S3", 2);
-    fourmiliereDFS.ajouterSalle("S4", 4);
-    fourmiliereDFS.ajouterSalle("S5", 2);
-    fourmiliereDFS.ajouterSalle("S6", 4);
-    fourmiliereDFS.ajouterSalle("S7", 2);
-    fourmiliereDFS.ajouterSalle("S8", 5);
-    fourmiliereDFS.ajouterSalle("S9", 1);
-    fourmiliereDFS.ajouterSalle("S10", 1);
-    fourmiliereDFS.ajouterSalle("S11", 1);
-    fourmiliereDFS.ajouterSalle("S12", 1);
-    fourmiliereDFS.ajouterSalle("S13", 4);
-    fourmiliereDFS.ajouterSalle("S14", 2);
-    fourmiliereDFS.ajouterSalle("Sd", 50);
-
-
-    fourmiliereDFS.ajouterTunnel("Sv", "S1");
-    fourmiliereDFS.ajouterTunnel("S1", "S2");
-    fourmiliereDFS.ajouterTunnel("S1", "S6");
-    fourmiliereDFS.ajouterTunnel("S2", "S3");
-    fourmiliereDFS.ajouterTunnel("S2", "S5");
-    fourmiliereDFS.ajouterTunnel("S3", "S4");
-    fourmiliereDFS.ajouterTunnel("S5", "S4");
-    fourmiliereDFS.ajouterTunnel("S4", "Sd");
-    fourmiliereDFS.ajouterTunnel("S6", "S7");
-    fourmiliereDFS.ajouterTunnel("S7", "S9");
-    fourmiliereDFS.ajouterTunnel("S9", "S14");
-    fourmiliereDFS.ajouterTunnel("S7", "S10");
-    fourmiliereDFS.ajouterTunnel("S10", "S14");
-    fourmiliereDFS.ajouterTunnel("S14", "Sd");
-    fourmiliereDFS.ajouterTunnel("S8", "S11");
-    fourmiliereDFS.ajouterTunnel("S8", "S12");
-    fourmiliereDFS.ajouterTunnel("S11", "S13");
-    fourmiliereDFS.ajouterTunnel("S12", "S13");
-    fourmiliereDFS.ajouterTunnel("S13", "Sd");
-    fourmiliereDFS.ajouterTunnel("S4", "Sd");
+    anthill.addTunnel("Sv", "S1");
+    anthill.addTunnel("S1", "S2");
+    anthill.addTunnel("S1", "S6");
+    anthill.addTunnel("S2", "S3");
+    anthill.addTunnel("S2", "S5");
+    anthill.addTunnel("S3", "S4");
+    anthill.addTunnel("S5", "S4");
+    anthill.addTunnel("S4", "Sd");
+    anthill.addTunnel("S6", "S7");
+    anthill.addTunnel("S6", "S8");
+    anthill.addTunnel("S7", "S9");
+    anthill.addTunnel("S7", "S10");
+    anthill.addTunnel("S9", "S14");
+    anthill.addTunnel("S10", "S14");
+    anthill.addTunnel("S14", "Sd");
+    anthill.addTunnel("S8", "S11");
+    anthill.addTunnel("S8", "S12");
+    anthill.addTunnel("S11", "S13");
+    anthill.addTunnel("S12", "S13");
+    anthill.addTunnel("S13", "Sd");
 
     for (int i = 1; i <= 50; ++i) {
-        fourmiliereDFS.ajouterFourmi("f" + std::to_string(i), "Sv");
+        anthill.addAnt(std::make_shared<Ant>(i, anthill.getRoom("Sv")));
     }
 
+    // Simulation using DFS
     std::cout << "\n=== Simulation DFS ===\n";
     auto start_dfs = std::chrono::high_resolution_clock::now();
-    simulateurDFS(fourmiliereDFS);
+    simulateurDFS(anthill);
     auto end_dfs = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration_dfs = end_dfs - start_dfs;
-    std::cout << "Temps DFS : " << duration_dfs.count() << " secondes\n";
+    std::cout << "\nTime DFS: " << duration_dfs.count() << " seconds\n";
 
+    // Graph: vertex names
+    std::string vertexData[16] = {
+        "Sv", "S1", "S2", "S3", "S5", "S4", "S6", "S7",
+        "S9", "S10", "S14", "S8", "S11", "S12", "S13", "Sd"
+    };
+
+    // Adjacency matrix
+    int adjacencyMatrix[16][16] = {
+        { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // Sv
+        { 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // S1
+        { 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // S2
+        { 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // S3
+        { 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // S5
+        { 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // S4
+        { 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0 }, // S6
+        { 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0 }, // S7
+        { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0 }, // S9
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0 }, // S10
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 }, // S14
+        { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0 }, // S8
+        { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0 }, // S11
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1 }, // S12
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1 }, // S13
+        { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0 }  // Sd
+    };
+
+    std::cout << "\n=== Graph Info (Adjacency Matrix & Connections) ===\n";
+    printAdjacencyMatrix(adjacencyMatrix, 16);
+    printConnections(adjacencyMatrix, vertexData, 16);
     return 0;
 }
