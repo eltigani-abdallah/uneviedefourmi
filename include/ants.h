@@ -57,7 +57,6 @@ public:
     void addTunnel(std::string from, std::string to);
     void addAnt(std::shared_ptr<Ant> ant);
     void simulateMovement();
-    void simulateMovementVariant();
 
     // Check if a room can reach Sd
     bool canReachSd(const std::shared_ptr<Room>& room) const {
